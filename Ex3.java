@@ -45,26 +45,48 @@ public class Ex3 extends Basic {
       tris = new ArrayList<Triangle>();
     
       tris.add( new Triangle( 
-                             new Vertex( new Triple( -.2, .2, 0 ),
-                                          new Triple( 0, 1, 0 ) ),
-                             new Vertex( new Triple( 0, 0, 0 ),
-                                          new Triple( 0, 1, 0 ) ),
-                             new Vertex( new Triple( 0, .2, 0 ),
-                                          new Triple( 0, 1, 0 ) )  ) );
-      tris.add( new Triangle( 
-                             new Vertex( new Triple( 1, .8, 0 ),
-                                          new Triple( 1, 0, 0 ) ),
-                             new Vertex( new Triple( 1, 1, 0 ),
-                                          new Triple( 1, 0, 0 ) ),
-                             new Vertex( new Triple( .8, 1, 0 ),
-                                          new Triple( 1, 0, 0 ) )  ) );
-      tris.add( new Triangle( 
-                             new Vertex( new Triple( .25, -.75, 0 ),
+                             new Vertex( new Triple( -1, -.8, 0 ),
                                           new Triple( 0, 0, 1 ) ),
-                             new Vertex( new Triple( .75, -.75, 0 ),
+                             new Vertex( new Triple( -1, -1, 0 ),
                                           new Triple( 0, 0, 1 ) ),
-                             new Vertex( new Triple( .5, -.25, 0 ),
+                             new Vertex( new Triple( -.8, -1, 0 ),
                                           new Triple( 0, 0, 1 ) )  ) );
+      
+      tris.add( new Triangle( 
+                           new Vertex( new Triple( -1, -.8, 0 ),
+                                       new Triple( 0, 0, 1) ),
+                           new Vertex( new Triple( -.8, -.8, 0 ),
+                                       new Triple( 0, 0, 1) ),
+                           new Vertex( new Triple( -.8, -1, 0 ),
+                                       new Triple( 0, 0, 1 ) )  ) );
+
+      
+
+
+      tris.add( new Triangle( 
+                              new Vertex( new Triple( 1, .8, 0 ),
+                                          new Triple( 1, 0, 0 ) ),
+                              new Vertex( new Triple( 1, 1, 0 ),
+                                          new Triple( 1, 0, 0 ) ),
+                              new Vertex( new Triple( .8, 1, 0 ),
+                                          new Triple( 1, 0, 0 ) )  ) );
+
+      tris.add( new Triangle( 
+                              new Vertex( new Triple( 1, .8, 0 ),
+                                          new Triple( 1, 0, 0 ) ),
+                              new Vertex( new Triple( .8, .8, 0 ),
+                                          new Triple( 1, 0, 0 ) ),
+                              new Vertex( new Triple( .8, 1, 0 ),
+                                          new Triple( 1, 0, 0 ) )  ) );
+
+
+      // tris.add( new Triangle( 
+      //                        new Vertex( new Triple( .25, -.75, 0 ),
+      //                                     new Triple( 0, 0, 1 ) ),
+      //                        new Vertex( new Triple( .75, -.75, 0 ),
+      //                                     new Triple( 0, 0, 1 ) ),
+      //                        new Vertex( new Triple( .5, -.25, 0 ),
+      //                                     new Triple( 0, 0, 1 ) )  ) );
    }
  
    protected void init() {
@@ -165,7 +187,7 @@ public class Ex3 extends Basic {
       sendData();
 
       // draw the buffers
-      GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, tris.size() * 3 );
+      GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, tris.size() * 4 );
             Util.error("after draw arrays");
  
    }
