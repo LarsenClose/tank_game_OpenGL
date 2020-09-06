@@ -45,43 +45,44 @@ public class Ex3 extends Basic {
       boxes = new ArrayList<Box>();
     
       boxes.add( 
-            new Box(   
+            new Tank(   
                new Triangle( 
                   new Vertex( new Triple( -1, -.8, 0 ),
-                              new Triple( 0, 0, 1 ) ),
+                              Colors.blue ),
                   new Vertex( new Triple( -1, -1, 0 ),
-                              new Triple( 0, 0, 1 ) ),
+                              Colors.blue ),
                   new Vertex( new Triple( -.8, -1, 0 ),
-                              new Triple( 0, 0, 1 ) ) ),
+                              Colors.blue ) ),
       
                new Triangle( 
                   new Vertex( new Triple( -1, -.8, 0 ),
-                              new Triple( 0, 0, 1) ),
+                              Colors.blue ),
                   new Vertex( new Triple( -.8, -.8, 0 ),
-                              new Triple( 0, 0, 1) ),
+                              Colors.blue ),
                   new Vertex( new Triple( -.8, -1, 0 ),
-                              new Triple( 0, 0, 1 ) ) ),
+                              Colors.blue ) ),
 
-                              "Tank") );
+                              "Tank", "Blue") );
 
       boxes.add( 
-            new Box(  
+            new Tank(  
                new Triangle( 
                   new Vertex( new Triple( 1, .8, 0 ),
-                              new Triple( 1, 0, 0 ) ),
+                              Colors.red ),
                   new Vertex( new Triple( 1, 1, 0 ),
-                              new Triple( 1, 0, 0 ) ),
+                              Colors.red ),
                   new Vertex( new Triple( .8, 1, 0 ),
-                              new Triple( 1, 0, 0 ) ) ),
+                              Colors.red ) ),
 
             new Triangle( 
                   new Vertex( new Triple( 1, .8, 0 ),
-                              new Triple( 1, 0, 0 ) ),
+                              Colors.red ),
                   new Vertex( new Triple( .8, .8, 0 ),
-                              new Triple( 1, 0, 0 ) ),
+                              Colors.red ),
                   new Vertex( new Triple( .8, 1, 0 ),
-                              new Triple( 1, 0, 0 ) ) ),
-                              "Tank") );
+                              Colors.red ) ),
+
+                              "Tank", "Red") );
 
    }
  
@@ -154,14 +155,51 @@ public class Ex3 extends Basic {
       // process all waiting input events
       while( InputInfo.size() > 0 ) {
          InputInfo info = InputInfo.get();
+
+         Tank red =  (Tank) boxes.get(0);
+         Tank blue = (Tank) boxes.get(1);
  
          if ( info.kind == 'k' && (info.action == GLFW_PRESS || 
                                   info.action == GLFW_REPEAT) ) {
             int code = info.code;
  
             if ( code == GLFW_KEY_B ) {
-               GL11.glClearColor( 0, 0, 1, 0 );
+               GL11.glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );
             } 
+            else if  ( code == GLFW_KEY_W ) {
+               red.speed(1);
+            }
+            else if  ( code == GLFW_KEY_S ) {
+               red.speed(0);
+            }
+            else if  ( code == GLFW_KEY_A ) {
+               red.turn("left");
+            }
+            else if  ( code == GLFW_KEY_D ) {
+               red.turn("right");
+            }
+            else if  ( code == GLFW_KEY_LEFT_CONTROL ) {
+               red.fire(1);
+            }
+
+            else if  ( code == GLFW_KEY_W ) {
+               blue.speed(1);
+            }
+            else if  ( code == GLFW_KEY_S ) {
+               blue.speed(0);
+            }
+            else if  ( code == GLFW_KEY_A ) {
+               blue.turn("left");
+            }
+            else if  ( code == GLFW_KEY_D ) {
+               blue.turn("right");
+            }
+            else if  ( code == GLFW_KEY_RIGHT_SHIFT ) {
+               blue.fire(1);
+            }
+
+
+            
             
 
          }// input event is a key
@@ -184,9 +222,9 @@ public class Ex3 extends Basic {
  
    protected void update() {
 
-      for (Box box: boxes){
-         box.
-      }
+      // for (Box box: boxes){
+      //    box.
+      // }
    
    }
  
@@ -227,8 +265,10 @@ public class Ex3 extends Basic {
 
       positionBuffer.rewind();  colorBuffer.rewind(); centerBuffer.rewind();
 
-      for (int k=0; k<boxes.size(); k++) {
+      for (int k=0; k<boxes.size(); k++){
+
          boxes.get(k).sendData( positionBuffer, colorBuffer, centerBuffer );
+         
       }
       positionBuffer.rewind();  colorBuffer.rewind(); centerBuffer.rewind();
 
