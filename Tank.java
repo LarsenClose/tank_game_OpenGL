@@ -5,7 +5,9 @@ import java.awt.Point;
 
 
 public class Tank extends Box {
-
+    public Tank(){
+        System.out.println("Super");
+    }
 
     // // statics set from settings class
     private float speed;

@@ -211,9 +211,9 @@ public class Ex3 extends Basic {
  
    protected void update() {
 
-      for (Box box : boxes){
+      // for (Box box : boxes){
          
-      }
+      // }
 
 
    }
