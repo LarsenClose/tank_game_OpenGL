@@ -2,7 +2,7 @@ import java.nio.FloatBuffer;
 
 public class Triangle {
 
-   private Vertex a, b, c;
+   public Vertex a, b, c;
 
    public Triangle( Vertex aIn, Vertex bIn, Vertex cIn ) {
       a = aIn;  b = bIn;  c = cIn;

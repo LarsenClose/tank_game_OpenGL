@@ -30,7 +30,7 @@ public class Util
   // (or probably other fancy monitors?)
   public final static int retinaDisplay = 1;
 
-/*
+
   // this is the one big, frequently reused app
   // buffer, direct allocated outside usual heap, apparently
   public static FloatBuffer appDataBuffer;
@@ -72,7 +72,7 @@ public class Util
 
     bufferClear();  // clear the appDataBuffer
   }
-*/
+
 
   public static void error( String message ){
     int error = glGetError();

@@ -21,7 +21,7 @@ public class Ex3 extends Basic {
    private final static int MAX = 10;
 
    public static void main(String[] args) {
-      Ex3 app = new Ex3( "One Triangle", 500, 500, 30 );
+      Ex3 app = new Ex3( "euclidean amoeboid adversaries", 500, 500, 30 );
       app.start();
    }// main
  
@@ -32,61 +32,57 @@ public class Ex3 extends Basic {
  
    private int vao;  // handle to the vertex array object
  
-   private ArrayList<Triangle> tris;
+   private ArrayList<Box> boxes;
  
-   private int positionHandle, colorHandle;
-   private FloatBuffer positionBuffer, colorBuffer;
+   private int positionHandle, colorHandle, centerHandle;
+   private FloatBuffer positionBuffer, colorBuffer, centerBuffer;
 
    // construct basic application with given title, pixel width and height
    // of drawing area, and frames per second
    public Ex3( String appTitle, int pw, int ph, int fps ) {
       super( appTitle, pw, ph, (long) ((1.0/fps)*1000000000) );
 
-      tris = new ArrayList<Triangle>();
+      boxes = new ArrayList<Box>();
     
-      tris.add( new Triangle( 
-                             new Vertex( new Triple( -1, -.8, 0 ),
-                                          new Triple( 0, 0, 1 ) ),
-                             new Vertex( new Triple( -1, -1, 0 ),
-                                          new Triple( 0, 0, 1 ) ),
-                             new Vertex( new Triple( -.8, -1, 0 ),
-                                          new Triple( 0, 0, 1 ) )  ) );
+      boxes.add( 
+            new Box(   
+               new Triangle( 
+                  new Vertex( new Triple( -1, -.8, 0 ),
+                              new Triple( 0, 0, 1 ) ),
+                  new Vertex( new Triple( -1, -1, 0 ),
+                              new Triple( 0, 0, 1 ) ),
+                  new Vertex( new Triple( -.8, -1, 0 ),
+                              new Triple( 0, 0, 1 ) ) ),
       
-      tris.add( new Triangle( 
-                           new Vertex( new Triple( -1, -.8, 0 ),
-                                       new Triple( 0, 0, 1) ),
-                           new Vertex( new Triple( -.8, -.8, 0 ),
-                                       new Triple( 0, 0, 1) ),
-                           new Vertex( new Triple( -.8, -1, 0 ),
-                                       new Triple( 0, 0, 1 ) )  ) );
+               new Triangle( 
+                  new Vertex( new Triple( -1, -.8, 0 ),
+                              new Triple( 0, 0, 1) ),
+                  new Vertex( new Triple( -.8, -.8, 0 ),
+                              new Triple( 0, 0, 1) ),
+                  new Vertex( new Triple( -.8, -1, 0 ),
+                              new Triple( 0, 0, 1 ) ) ),
 
-      
+                              "Tank") );
 
+      boxes.add( 
+            new Box(  
+               new Triangle( 
+                  new Vertex( new Triple( 1, .8, 0 ),
+                              new Triple( 1, 0, 0 ) ),
+                  new Vertex( new Triple( 1, 1, 0 ),
+                              new Triple( 1, 0, 0 ) ),
+                  new Vertex( new Triple( .8, 1, 0 ),
+                              new Triple( 1, 0, 0 ) ) ),
 
-      tris.add( new Triangle( 
-                              new Vertex( new Triple( 1, .8, 0 ),
-                                          new Triple( 1, 0, 0 ) ),
-                              new Vertex( new Triple( 1, 1, 0 ),
-                                          new Triple( 1, 0, 0 ) ),
-                              new Vertex( new Triple( .8, 1, 0 ),
-                                          new Triple( 1, 0, 0 ) )  ) );
+            new Triangle( 
+                  new Vertex( new Triple( 1, .8, 0 ),
+                              new Triple( 1, 0, 0 ) ),
+                  new Vertex( new Triple( .8, .8, 0 ),
+                              new Triple( 1, 0, 0 ) ),
+                  new Vertex( new Triple( .8, 1, 0 ),
+                              new Triple( 1, 0, 0 ) ) ),
+                              "Tank") );
 
-      tris.add( new Triangle( 
-                              new Vertex( new Triple( 1, .8, 0 ),
-                                          new Triple( 1, 0, 0 ) ),
-                              new Vertex( new Triple( .8, .8, 0 ),
-                                          new Triple( 1, 0, 0 ) ),
-                              new Vertex( new Triple( .8, 1, 0 ),
-                                          new Triple( 1, 0, 0 ) )  ) );
-
-
-      // tris.add( new Triangle( 
-      //                        new Vertex( new Triple( .25, -.75, 0 ),
-      //                                     new Triple( 0, 0, 1 ) ),
-      //                        new Vertex( new Triple( .75, -.75, 0 ),
-      //                                     new Triple( 0, 0, 1 ) ),
-      //                        new Vertex( new Triple( .5, -.25, 0 ),
-      //                                     new Triple( 0, 0, 1 ) )  ) );
    }
  
    protected void init() {
@@ -137,17 +133,22 @@ public class Ex3 extends Basic {
      // create vertex buffer objects and their handles one at a time
      positionHandle = GL15.glGenBuffers();
      colorHandle = GL15.glGenBuffers();
+     centerHandle = GL15.glGenBuffers();
      System.out.println("have position handle " + positionHandle +
-                        " and color handle " + colorHandle );
+                        " and color handle " + colorHandle +
+                        " and center handle");
+ 
  
      // create the buffers (data doesn't matter so much, just the size)
      positionBuffer = Util.createFloatBuffer( MAX * 3 * 3 );
      colorBuffer = Util.createFloatBuffer( MAX * 3 * 3 );
+     centerBuffer = Util.createFloatBuffer( MAX * 3 * 3 );
 
      // set the background color
      GL11.glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );
 
    }
+   
  
    protected void processInputs() {
       // process all waiting input events
@@ -160,16 +161,17 @@ public class Ex3 extends Basic {
  
             if ( code == GLFW_KEY_B ) {
                GL11.glClearColor( 0, 0, 1, 0 );
-            }
+            } 
+            
 
          }// input event is a key
  
          else if ( info.kind == 'm' ) {// mouse moved
-            //  System.out.println( info );
+             System.out.println( info );
          }
  
          else if( info.kind == 'b' ) {// button action
-            //  System.out.println( info );
+             System.out.println( info );
          }
  
       }// loop to process all input events
@@ -177,6 +179,7 @@ public class Ex3 extends Basic {
    }
  
    protected void update() {
+      processInputs();
    }
  
    protected void display() {
@@ -187,8 +190,10 @@ public class Ex3 extends Basic {
       sendData();
 
       // draw the buffers
-      GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, tris.size() * 4 );
+      GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, boxes.size() * 6 );
             Util.error("after draw arrays");
+      
+      // update();
  
    }
  
@@ -212,12 +217,13 @@ public class Ex3 extends Basic {
      
       // actually get the data in positionBuffer, colorBuffer):
 
-      positionBuffer.rewind();  colorBuffer.rewind();
+      positionBuffer.rewind();  colorBuffer.rewind(); centerBuffer.rewind();
 
-      for (int k=0; k<tris.size(); k++) {
-         tris.get(k).sendData( positionBuffer, colorBuffer );
+      for (int k=0; k<boxes.size(); k++) {
+         boxes.get(k).sendData( positionBuffer, colorBuffer, centerBuffer );
       }
-      positionBuffer.rewind();  colorBuffer.rewind();
+      positionBuffer.rewind();  colorBuffer.rewind(); centerBuffer.rewind();
+
 
 // Util.showBuffer("position buffer: ", positionBuffer );  positionBuffer.rewind();
 // Util.showBuffer("color buffer: ", colorBuffer );  colorBuffer.rewind();
@@ -234,6 +240,12 @@ public class Ex3 extends Basic {
         GL15.glBufferData( GL15.GL_ARRAY_BUFFER, 
                                       colorBuffer, GL15.GL_STATIC_DRAW );
               Util.error("after set color data");
+         
+         GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, centerHandle );
+              Util.error("after bind centerHandle");
+        GL15.glBufferData( GL15.GL_ARRAY_BUFFER, 
+                                      centerBuffer, GL15.GL_STATIC_DRAW );
+              Util.error("after set center data");
  
        // enable the vertex array attributes
        GL20.glEnableVertexAttribArray(0);  // position
@@ -252,6 +264,12 @@ public class Ex3 extends Basic {
               Util.error("after bind color buffer");
        GL20.glVertexAttribPointer( 1, 3, GL11.GL_FLOAT, false, 0, 0 );
               Util.error("after do color vertex attrib pointer");
+      
+       // map index 2 to the center buffer
+       GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, centerHandle );
+              Util.error("after bind center buffer");
+       GL20.glVertexAttribPointer( 2, 3, GL11.GL_FLOAT, false, 0, 0 );
+              Util.error("after do center vertex attrib pointer");
  
    }// sendData
 
