@@ -49,7 +49,7 @@ public class Tank extends Box {
         this.height = Constants.tank_height;
 
 
-        this.b = new Triangle( 
+        this.a = new Triangle( 
                     new Vertex(
                         new Triple( (this.x + this.width),(this.y + this.height), this.z),
                         this.color),
@@ -126,13 +126,13 @@ public class Tank extends Box {
 
 
     // put box data in a buffer
-    public void sendData( FloatBuffer pb, FloatBuffer cb, FloatBuffer buff) {
-       a.sendData(pb, cb);
-       b.sendData(pb, cb);
-       buff.put( ( float ) this.x );
-       buff.put( ( float ) this.y );
-       buff.put( ( float ) this.z );
-
+    public void sendData( FloatBuffer pb, FloatBuffer cb) {
+        a.a.sendData(pb, cb);
+        a.b.sendData(pb, cb);
+        a.c.sendData(pb, cb);
+        b.a.sendData(pb, cb);
+        b.b.sendData(pb, cb);
+        b.c.sendData(pb, cb);
     }
 
 

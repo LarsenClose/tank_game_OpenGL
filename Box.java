@@ -9,23 +9,28 @@ public class Box {
     private String kind; 
 
     // center
-    private float x;
-    private float y;
-    private float z;
+    private double x;
+    private double y;
+    private double z;
 
     private float width;
     private float height;
+
+    private Triple color;
 
 
     private Triangle a, b;
 
     public Box (Triple centered) {
 
-        this.kind = "bullet";
+        this.kind = "basic";
 
-        this.x = (float) centered.x;
-        this.y = (float) centered.y;
-        this.z = (float )centered.z;
+        this.color = Colors.black;
+
+
+        this.x = centered.x;
+        this.y = centered.y;
+        this.z = centered.z;
 
         this.width = Constants.basic_width;
         this.height = Constants.basic_height;
@@ -33,33 +38,34 @@ public class Box {
         this.a = new Triangle( 
                     new Vertex(
                         new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        Colors.black ),
+                        this.color ),
                     new Vertex(
                         new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        Colors.black ),
+                        this.color ),
                     new Vertex(
                         new Triple( (this.x + this.width),(this.y - this.height),this.z),
-                        Colors.black));
+                        this.color ));
 
         this.b = new Triangle( 
                     new Vertex(
                         new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        Colors.black ),
+                        this.color ),
                     new Vertex(
                         new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        Colors.black ),
+                        this.color ),
                     new Vertex(
                         new Triple( (this.x - this.width),(this.y + this.height), this.z),
-                        Colors.black));
+                        this.color));
     }
 
 
-    public void sendData( FloatBuffer pb, FloatBuffer cb, FloatBuffer buff ) {
-        a.sendData(pb, cb);
-        b.sendData(pb, cb);
-        buff.put( (float) this.x );
-        buff.put( (float) this.y );
-        buff.put( (float) this.z );
+    public void sendData( FloatBuffer pb, FloatBuffer cb) {
+        a.a.sendData(pb, cb);
+        a.b.sendData(pb, cb);
+        a.c.sendData(pb, cb);
+        b.a.sendData(pb, cb);
+        b.b.sendData(pb, cb);
+        b.c.sendData(pb, cb);
      }
 
 }

@@ -46,32 +46,37 @@ public class Ex3 extends Basic {
     
       boxes.add( 
             new Tank(
-                  new Triple(-9, -9, 0), "tank", Colors.red));
+                  new Triple(-.9, -.9, 0), "tank", Colors.red));
 
 
       boxes.add( 
             new Tank( 
-                  new Triple(9, 9, 0), "tank", Colors.blue));
+                  new Triple(.9, .9, 0), "tank", Colors.blue));
 
 
-      boxes.add(
-            new Bullet(
-                  new Triple( -1, -1, 0),  0f,  0f, boxes.get(0)) ); 
+      // boxes.add(
+      //       new Bullet(
+      //             new Triple( -.09, .09, 0),  0f,  0f, boxes.get(0)) ); 
 
-      boxes.add(
-         new Bullet(
-               new Triple( -1, -1, 0),  0f,  0f, boxes.get(0)) ); 
+      // boxes.add(
+      //       new Bullet(
+      //             new Triple( .09, -.09, 0),  0f,  0f, boxes.get(0)) ); 
 
-      boxes.add(
-            new Bullet(
-                  new Triple( -1, -1, 0),  0f,  0f, boxes.get(1)) ); 
+      // boxes.add(
+      //       new Bullet(
+      //             new Triple( .9, -1, 0),  0f,  0f, boxes.get(1)) ); 
+      
+      // boxes.add(
+      //    new Bullet(
+      //          new Triple( -1, -1, 0),  0f,  0f, boxes.get(1)) ); 
       
       boxes.add(
-         new Bullet(
-               new Triple( -1, -1, 0),  0f,  0f, boxes.get(1)) ); 
-               
-
-         
+         new Box(
+            new Triple( -.1, -.1, 0)));
+      
+      boxes.add(
+         new Box(
+            new Triple( .1, .1, 0)));
       
 
    }
@@ -104,7 +109,6 @@ public class Ex3 extends Basic {
      System.out.println("Fragment shader:\n" + fragmentShaderCode + "\n\n" );
  
      f1 = new Shader( "fragment", fragmentShaderCode );
- 
      hp1 = GL20.glCreateProgram();
           Util.error("after create program");
           System.out.println("program handle is " + hp1 );
@@ -124,16 +128,15 @@ public class Ex3 extends Basic {
      // create vertex buffer objects and their handles one at a time
      positionHandle = GL15.glGenBuffers();
      colorHandle = GL15.glGenBuffers();
-     centerHandle = GL15.glGenBuffers();
+
      System.out.println("have position handle " + positionHandle +
-                        " and color handle " + colorHandle +
-                        " and center handle");
+                        " and color handle " + colorHandle );
  
  
      // create the buffers (data doesn't matter so much, just the size)
-     positionBuffer = Util.createFloatBuffer( MAX * 3 * 3 );
-     colorBuffer = Util.createFloatBuffer( MAX * 3 * 3 );
-     centerBuffer = Util.createFloatBuffer( MAX * 3 * 3 );
+     positionBuffer = Util.createFloatBuffer( MAX * 12 * 12 );
+     colorBuffer = Util.createFloatBuffer( MAX * 12 * 12 );
+
 
      // set the background color
      GL11.glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );
@@ -211,6 +214,11 @@ public class Ex3 extends Basic {
  
    protected void update() {
 
+      Box positive =  (Box) boxes.get(2);
+      Box netative = (Box) boxes.get(3);
+
+
+
       // for (Box box : boxes){
          
       // }
@@ -226,7 +234,7 @@ public class Ex3 extends Basic {
       sendData();
 
       // draw the buffers
-      GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, boxes.size() * 6 );
+      GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, boxes.size() * 20 );
             Util.error("after draw arrays");
       
       update();
@@ -253,14 +261,13 @@ public class Ex3 extends Basic {
      
       // actually get the data in positionBuffer, colorBuffer):
 
-      positionBuffer.rewind();  colorBuffer.rewind(); centerBuffer.rewind();
-
+      positionBuffer.rewind();  colorBuffer.rewind(); 
       for (int k=0; k<boxes.size(); k++){
 
-         boxes.get(k).sendData( positionBuffer, colorBuffer, centerBuffer );
+         boxes.get(k).sendData( positionBuffer, colorBuffer);
          
       }
-      positionBuffer.rewind();  colorBuffer.rewind(); centerBuffer.rewind();
+      positionBuffer.rewind();  colorBuffer.rewind();
 
 
 // Util.showBuffer("position buffer: ", positionBuffer );  positionBuffer.rewind();
@@ -279,12 +286,7 @@ public class Ex3 extends Basic {
                                       colorBuffer, GL15.GL_STATIC_DRAW );
               Util.error("after set color data");
          
-         GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, centerHandle );
-              Util.error("after bind centerHandle");
-        GL15.glBufferData( GL15.GL_ARRAY_BUFFER, 
-                                      centerBuffer, GL15.GL_STATIC_DRAW );
-              Util.error("after set center data");
- 
+
        // enable the vertex array attributes
        GL20.glEnableVertexAttribArray(0);  // position
               Util.error("after enable attrib 0");
@@ -303,11 +305,6 @@ public class Ex3 extends Basic {
        GL20.glVertexAttribPointer( 1, 3, GL11.GL_FLOAT, false, 0, 0 );
               Util.error("after do color vertex attrib pointer");
       
-       // map index 2 to the center buffer
-       GL15.glBindBuffer( GL15.GL_ARRAY_BUFFER, centerHandle );
-              Util.error("after bind center buffer");
-       GL20.glVertexAttribPointer( 2, 3, GL11.GL_FLOAT, false, 0, 0 );
-              Util.error("after do center vertex attrib pointer");
  
    }// sendData
 
