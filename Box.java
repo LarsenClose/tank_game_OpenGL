@@ -19,13 +19,13 @@ public class Box {
 
     private Triangle a, b;
 
-    public Box (Triple where) {
+    public Box (Triple centered) {
 
         this.kind = "bullet";
 
-        this.x = (float) where.x;
-        this.y = (float) where.y;
-        this.z = (float )where.z;
+        this.x = (float) centered.x;
+        this.y = (float) centered.y;
+        this.z = (float )centered.z;
 
         this.width = Constants.basic_width;
         this.height = Constants.basic_height;

@@ -45,50 +45,34 @@ public class Ex3 extends Basic {
       boxes = new ArrayList<Box>();
     
       boxes.add( 
-            new Tank(   
-               new Triangle( 
-                  new Vertex( new Triple( -1, -.8, 0 ),
-                              Colors.blue ),
-                  new Vertex( new Triple( -1, -1, 0 ),
-                              Colors.blue ),
-                  new Vertex( new Triple( -.8, -1, 0 ),
-                              Colors.blue ) ),
-      
-               new Triangle( 
-                  new Vertex( new Triple( -1, -.8, 0 ),
-                              Colors.blue ),
-                  new Vertex( new Triple( -.8, -.8, 0 ),
-                              Colors.blue ),
-                  new Vertex( new Triple( -.8, -1, 0 ),
-                              Colors.blue ) ),
+            new Tank(
+                  new Triple(-9, -9, 0), "tank", Colors.red));
 
-                              "Tank", "Blue") );
 
       boxes.add( 
-            new Tank(  
-               new Triangle( 
-                  new Vertex( new Triple( 1, .8, 0 ),
-                              Colors.red ),
-                  new Vertex( new Triple( 1, 1, 0 ),
-                              Colors.red ),
-                  new Vertex( new Triple( .8, 1, 0 ),
-                              Colors.red ) ),
+            new Tank( 
+                  new Triple(9, 9, 0), "tank", Colors.blue));
 
-            new Triangle( 
-                  new Vertex( new Triple( 1, .8, 0 ),
-                              Colors.red ),
-                  new Vertex( new Triple( .8, .8, 0 ),
-                              Colors.red ),
-                  new Vertex( new Triple( .8, 1, 0 ),
-                              Colors.red ) ),
 
-                              "Tank", "Red") );
-      // boxes.add(
-      //    new Bullet(           this.bullet = new Bullet( new Triple(this.x, this.y, this.z), this.bearing);
-      //    Ex3.boxes.add(this.bullet);
-            
-      //    )
-      // )
+      boxes.add(
+            new Bullet(
+                  new Triple( -1, -1, 0),  0f,  0f, boxes.get(0)) ); 
+
+      boxes.add(
+         new Bullet(
+               new Triple( -1, -1, 0),  0f,  0f, boxes.get(0)) ); 
+
+      boxes.add(
+            new Bullet(
+                  new Triple( -1, -1, 0),  0f,  0f, boxes.get(1)) ); 
+      
+      boxes.add(
+         new Bullet(
+               new Triple( -1, -1, 0),  0f,  0f, boxes.get(1)) ); 
+               
+
+         
+      
 
    }
  
@@ -226,6 +210,10 @@ public class Ex3 extends Basic {
 
  
    protected void update() {
+
+      for (Box box : boxes){
+         
+      }
 
 
    }

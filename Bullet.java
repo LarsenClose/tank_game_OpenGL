@@ -18,7 +18,7 @@ public class Bullet extends Box {
 
     private Triangle a, b;
 
-    public Bullet(Triple centered, Float direction) {
+    public Bullet(Triple centered, Float direction, Float speed, Box owner) {
 
         this.kind = "bullet";
 
@@ -30,7 +30,7 @@ public class Bullet extends Box {
         this.height = Constants.bullet_height;
         this.bearing = direction;
 
-        this.speed = .4f;
+        this.speed = 0;
 
         this.a = new Triangle( 
                     new Vertex(

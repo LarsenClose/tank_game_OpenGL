@@ -7,8 +7,12 @@ public class Constants {
 
     static float speed_increments = .5f;
 
-    static float basic_width = .1f;
+    static float basic_width = .01f;
     static float basic_height = .2f;
+
+
+    static float tank_width = .1f;
+    static float tank_height = .1f;
 
 
     

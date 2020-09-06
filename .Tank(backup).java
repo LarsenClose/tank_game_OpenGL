@@ -5,7 +5,9 @@ import java.awt.Point;
 
 
 public class Tank extends Box {
-
+    public Tank(){
+        System.out.println("Super");
+    }
 
     // // statics set from settings class
     private float speed;
@@ -14,15 +16,17 @@ public class Tank extends Box {
     private String kind; 
 
     // center
-    private double x;
-    private double y;
-    private double z;
+    private float x;
+    private float y;
+    private float z;
 
     // center as point
     public Point center;
 
+    // not sure how to address instasuperce supernstance variable
+    public String color;
 
-    private Triple color;
+
 
     private Float width;
     private Float height;
@@ -30,46 +34,33 @@ public class Tank extends Box {
 
     private Triangle a, b;
 
-    public Tank(Triple centered, String which_kind, Triple colors) {
+    public Tank(Triangle over, Triangle under, String which_kind, String which_color) {
 
         this.speed = 0;
         this.ammunition = 30;
         this.kind = which_kind;
 
-        this.x = centered.x;
-        this.y = centered.y;
-        this.z = centered.z;
-
-        this.color = colors;
 
 
-        this.width = Constants.tank_width;
-        this.height = Constants.tank_height;
+        this.a = over;
+        this.b = under;
 
+        Double v1x = this.a.a.position.x;
+        Double v1y = this.a.a.position.y;
 
-        this.b = new Triangle( 
-                    new Vertex(
-                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        this.color),
-                    new Vertex(
-                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        this.color ),
-                    new Vertex(
-                        new Triple( (this.x + this.width),(this.y - this.height),this.z),
-                        this.color));
+        Double v2x = this.a.b.position.x;
+        Double v2y = this.a.b.position.y;
 
-        this.b = new Triangle( 
-                    new Vertex(
-                        new Triple( (this.x + .1f),(this.y + .1f), this.z),
-                        this.color),
-                    new Vertex(
-                        new Triple( (this.x - .1f),(this.y - .1f), this.z),
-                        this.color),
-                    new Vertex(
-                        new Triple( (this.x - .1f),(this.y + .1f), this.z),
-                        this.color));
-   
+        Double v3x = this.a.c.position.x;
+        Double v3y = this.a.c.position.y;
+        this.x = (float) middle_of_vector_pairs(v1x, v1y, v2x, v2y);
+        this.y = (float) middle_of_vector_pairs(v2x, v3y, v3x, v3y);
+        this.z = 0;
+
         this.center = new Point( (int) this.x, (int) this.y);
+
+        this.width = 2 * x;
+        this.height = 2 * y;
         this.bearing = getAngle(this.center);
 
     }
@@ -100,7 +91,7 @@ public class Tank extends Box {
         if (up_or_down == 0 ) {
             this.speed = 0;
         }
-        else if (up_or_down == 1) {
+        else if (up_or_down ==1) {
             this.speed +=1;
         }
 
