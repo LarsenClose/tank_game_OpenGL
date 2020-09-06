@@ -177,9 +177,17 @@ public class Ex3 extends Basic {
       }// loop to process all input events
  
    }
+
+   protected void moveTanks() {
+      
+   }
  
    protected void update() {
-      processInputs();
+
+      for (Box box: boxes){
+         box.
+      }
+   
    }
  
    protected void display() {
@@ -193,7 +201,7 @@ public class Ex3 extends Basic {
       GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, boxes.size() * 6 );
             Util.error("after draw arrays");
       
-      // update();
+      update();
  
    }
  

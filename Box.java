@@ -19,6 +19,10 @@ public class Box {
     // center as point
     public Point center;
 
+    // not sure how to address instance variables after creating them the way 
+    // they are here so adding a color instance variable
+    public String color;
+
 
 
     private Float width;
@@ -27,11 +31,11 @@ public class Box {
 
     private Triangle a, b;
 
-    public Box(Triangle over, Triangle under, String designation) {
+    public Box(Triangle over, Triangle under, String which_kind, String which_color) {
 
         this.speed = 0;
         this.bullets = 10;
-        this.kind = designation;
+        this.kind = which_kind;
 
 
         this.a = over;
