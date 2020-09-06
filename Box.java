@@ -58,7 +58,7 @@ public class Box {
                         this.color));
     }
 
-
+    
     public void sendData( FloatBuffer pb, FloatBuffer cb) {
         a.a.sendData(pb, cb);
         a.b.sendData(pb, cb);

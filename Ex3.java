@@ -32,10 +32,11 @@ public class Ex3 extends Basic {
  
    private int vao;  // handle to the vertex array object
  
-   public ArrayList<Box> boxes;
+   private ArrayList<Box> boxes;
  
-   private int positionHandle, colorHandle, centerHandle;
-   private FloatBuffer positionBuffer, colorBuffer, centerBuffer;
+   private int positionHandle, colorHandle;
+   private FloatBuffer positionBuffer, colorBuffer;
+   private FloatBuffer positionBufferWall, colorBufferWall;
 
    // construct basic application with given title, pixel width and height
    // of drawing area, and frames per second
@@ -46,12 +47,12 @@ public class Ex3 extends Basic {
     
       boxes.add( 
             new Tank(
-                  new Triple(-.9, -.9, 0), "tank", Colors.red));
+                  new Triple(-.8, -.8, 0), "tank", Colors.red));
 
 
       boxes.add( 
             new Tank( 
-                  new Triple(.9, .9, 0), "tank", Colors.blue));
+                  new Triple(.8, .8, 0), "tank", Colors.blue));
 
 
       // boxes.add(
@@ -76,10 +77,14 @@ public class Ex3 extends Basic {
       
       boxes.add(
          new Box(
-            new Triple( .1, .1, 0)));
+            new Triple( .3, .7, 0)));
       
-
-   }
+      boxes.add(
+               new Wall(
+                     new Triple(-.92, .92, 0),
+                     new Triple(.92, .92, 0),
+                     new Triple(.92, -.92, 0),
+                     new Triple(-.92, .92, 0) ) );} //keep last element to pop and render
  
    protected void init() {
       String vertexShaderCode =
@@ -136,6 +141,8 @@ public class Ex3 extends Basic {
      // create the buffers (data doesn't matter so much, just the size)
      positionBuffer = Util.createFloatBuffer( MAX * 12 * 12 );
      colorBuffer = Util.createFloatBuffer( MAX * 12 * 12 );
+     positionBufferWall= Util.createFloatBuffer( MAX * 12 * 12 );
+     colorBufferWall = Util.createFloatBuffer( MAX * 12 * 12 );
 
 
      // set the background color
@@ -214,12 +221,13 @@ public class Ex3 extends Basic {
  
    protected void update() {
 
-      Box positive =  (Box) boxes.get(2);
-      Box netative = (Box) boxes.get(3);
+      // Box positive =  (Box) boxes.get(2);
+      // Box netative = (Box) boxes.get(3);
 
 
 
       // for (Box box : boxes){
+      //    box = box
          
       // }
 
@@ -234,9 +242,14 @@ public class Ex3 extends Basic {
       sendData();
 
       // draw the buffers
+      GL11.glDrawArrays( GL11.GL_LINE_LOOP, 0, 4);
+      Util.error("after draw loop");
+
       GL11.glDrawArrays( GL11.GL_TRIANGLES, 0, boxes.size() * 20 );
             Util.error("after draw arrays");
-      
+
+
+      processInputs();
       update();
  
    }
@@ -259,10 +272,16 @@ public class Ex3 extends Basic {
  
       // connect data to the VBO's
      
-      // actually get the data in positionBuffer, colorBuffer):
+      // trying to handle having one quad in my boxes
 
+      positionBufferWall.rewind();  colorBufferWall.rewind();
+      boxes.get(boxes.size()-1).sendData(positionBufferWall, colorBufferWall);
+      positionBufferWall.rewind();  colorBufferWall.rewind();
+
+
+      // actually get the data in positionBuffer, colorBuffer):
       positionBuffer.rewind();  colorBuffer.rewind(); 
-      for (int k=0; k<boxes.size(); k++){
+      for (int k=0; k<boxes.size() -1; k++){
 
          boxes.get(k).sendData( positionBuffer, colorBuffer);
          

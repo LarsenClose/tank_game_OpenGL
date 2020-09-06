@@ -4,6 +4,5 @@ public class Colors {
     static Triple red = new Triple( 1, 0, 0 );
     static Triple blue = new Triple( 0, 0, 1 );
     static Triple black = new Triple(0, 0, 0);
-
-    
+    static Triple cyan = new Triple(0, 1, 1);
 }
