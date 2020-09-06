@@ -32,7 +32,7 @@ public class Ex3 extends Basic {
  
    private int vao;  // handle to the vertex array object
  
-   private ArrayList<Box> boxes;
+   public ArrayList<Box> boxes;
  
    private int positionHandle, colorHandle, centerHandle;
    private FloatBuffer positionBuffer, colorBuffer, centerBuffer;
@@ -83,6 +83,12 @@ public class Ex3 extends Basic {
                               Colors.red ) ),
 
                               "Tank", "Red") );
+      // boxes.add(
+      //    new Bullet(           this.bullet = new Bullet( new Triple(this.x, this.y, this.z), this.bearing);
+      //    Ex3.boxes.add(this.bullet);
+            
+      //    )
+      // )
 
    }
  
@@ -179,7 +185,7 @@ public class Ex3 extends Basic {
                red.turn("right");
             }
             else if  ( code == GLFW_KEY_LEFT_CONTROL ) {
-               red.fire(1);
+               // red.fire();
             }
 
             else if  ( code == GLFW_KEY_W ) {
@@ -195,7 +201,7 @@ public class Ex3 extends Basic {
                blue.turn("right");
             }
             else if  ( code == GLFW_KEY_RIGHT_SHIFT ) {
-               blue.fire(1);
+               // blue.fire();
             }
 
 
@@ -216,16 +222,12 @@ public class Ex3 extends Basic {
  
    }
 
-   protected void moveTanks() {
-      
-   }
+   // public void fire();
+
  
    protected void update() {
 
-      // for (Box box: boxes){
-      //    box.
-      // }
-   
+
    }
  
    protected void display() {

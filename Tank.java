@@ -5,6 +5,9 @@ import java.awt.Point;
 
 
 public class Tank extends Box {
+    public Tank(){
+        System.out.println("Super");
+    }
 
     // // statics set from settings class
     private float speed;
@@ -103,17 +106,12 @@ public class Tank extends Box {
         }
     }
 
-    public void fire(int round){
-        if (ammunition >0){
-            this.bullet = new Bullet( new Triple(this.x, this.y, this.z), this.bearing);
-
-        }
-
-        
-
-
-
-    }
+    // public void fire(int round){
+    //     if (ammunition >0){
+    //         this.bullet = new Bullet( new Triple(this.x, this.y, this.z), this.bearing);
+    //         Ex3.boxes.add(this.bullet);
+    //     }
+//  }
 
 
     // put box data in a buffer
