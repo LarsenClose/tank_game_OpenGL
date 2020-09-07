@@ -4,33 +4,34 @@ import java.nio.FloatBuffer;
 
 public class Bullet extends Box {
 
-    private String kind;
-    private float speed;
+    public String kind;
+    public float speed;
 
     // center
-    private double x;
-    private double y;
-    private double z;
+    public double x;
+    public double y;
+    public double z;
 
-    private Float width;
-    private Float height;
-    private Float bearing;
+    public Float width;
+    public Float height;
+    public Float bearing;
 
     private Triangle a, b;
 
-    public Bullet(Triple centered, Float direction, Float speed, Box owner) {
+    public Bullet(Triple centered, Float bearing) {
 
         this.kind = "bullet";
+        this.bearing = bearing;
 
         this.x = centered.x;
         this.y = centered.y;
         this.z = centered.z;
 
+        // defined in Constants class
         this.width = Constants.bullet_width;
         this.height = Constants.bullet_height;
-        this.bearing = direction;
+        this.speed = Constants.bullet_speed;
 
-        this.speed = 0;
 
         this.a = new Triangle( 
                     new Vertex(
@@ -45,13 +46,13 @@ public class Bullet extends Box {
 
         this.b = new Triangle( 
                     new Vertex(
-                        new Triple( (this.x + .1f),(this.y + .1f), this.z),
+                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
                         Colors.silver ),
                     new Vertex(
-                        new Triple( (this.x - .1f),(this.y - .1f), this.z),
+                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
                         Colors.silver ),
                     new Vertex(
-                        new Triple( (this.x - .1f),(this.y + .1f), this.z),
+                        new Triple( (this.x - this.width),(this.y + this.height), this.z),
                         Colors.silver));
                         
         }
@@ -61,6 +62,9 @@ public class Bullet extends Box {
             this.a.a.sendData( pb, cb );
             this.a.b.sendData( pb, cb );
             this.a.c.sendData( pb, cb );
+            this.b.a.sendData( pb, cb );
+            this.b.b.sendData( pb, cb );
+            this.b.c.sendData( pb, cb );
         }
 
 

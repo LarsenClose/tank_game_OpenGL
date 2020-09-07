@@ -9,16 +9,16 @@ public class Tank extends Box {
         System.out.println("Super");
     }
 
-    // // statics set from settings class
-    private float speed;
-    private Bullet bullet;
-    private float ammunition;
-    private String kind; 
+
+    public float speed;
+
+    public float ammunition;
+    public String kind;
 
     // center
-    private double x;
-    private double y;
-    private double z;
+    public double x;
+    public double y;
+    public double z;
 
     // center as point
     public Point center;
@@ -28,15 +28,15 @@ public class Tank extends Box {
 
     private Float width;
     private Float height;
-    private Float bearing;
+    public Float bearing;
 
     private Triangle a, b;
 
-    public Tank(Triple centered, String which_kind, Triple colors) {
+    public Tank(Triple centered, Triple colors) {
 
         this.speed = 0;
-        this.ammunition = 30;
-        this.kind = which_kind;
+        this.ammunition = Constants.starting_ammunition;
+        this.kind = "tank";
 
         this.x = centered.x;
         this.y = centered.y;
@@ -76,17 +76,17 @@ public class Tank extends Box {
 
     }
 
-    public double middle_of_vector_pairs(
-	    double x1, 
-	    double y1, 
-	    double x2, 
-	    double y2) {
+    // public double middle_of_vector_pairs(
+	//     double x1, 
+	//     double y1, 
+	//     double x2, 
+	//     double y2) {
 	        
-	    double ac = Math.abs(y2 - y1);
-	    double cb = Math.abs(x2 - x1);
+	//     double ac = Math.abs(y2 - y1);
+	//     double cb = Math.abs(x2 - x1);
 	        
-	    return Math.hypot(ac, cb) / 2;
-    }
+	//     return Math.hypot(ac, cb) / 2;
+    // }
 
     public float getAngle(Point target) {
         float angle = (float) Math.toDegrees(Math.atan2(target.y - y, target.x - x));
@@ -99,21 +99,21 @@ public class Tank extends Box {
     }
 
     public void speed(int up_or_down){
-        if (up_or_down == 0 ) {
-            this.speed = 0;
+        if (up_or_down == 1 ) {
+            this.speed += Constants.speed_increment;
         }
-        else if (up_or_down == 1) {
-            this.speed +=1;
+        else if (up_or_down == 0) {
+            this.speed = 0;
         }
 
     }
 
     public void turn(String direction){
         if (direction == "left" ) {
-            this.bearing += 15;
+            this.bearing += Constants.degree_change;
         }
         else if (direction == "right") {
-            this.bearing -=15;
+            this.bearing -= Constants.degree_change;
         }
     }
 
