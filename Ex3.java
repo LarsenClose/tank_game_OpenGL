@@ -69,9 +69,9 @@ public class Ex3 extends Basic {
 
       boxes.add(new Box(new Triple(.3, .7, 0)));
 
-      // boxes.add(new Wall(new Triple(-.92, .92, 0), new Triple(.92, .92, 0), new Triple(.92, -.92, 0),
-      //       new Triple(-.92, .92, 0)));
-   } // keep last element to pop and render
+      boxes.add(new Border(new Triple(-1, 1, 0), new Triple(1, 1, 0), new Triple(1, -1, 0),
+            new Triple(-1, -1, 0)));
+   } 
 
    protected void init() {
       String vertexShaderCode = "#version 330 core\n" + "layout (location = 0 ) in vec3 vertexPosition;\n"
@@ -136,7 +136,7 @@ public class Ex3 extends Basic {
                GL11.glClearColor(0, 0, 1, 0);
             } else if (code == GLFW_KEY_W) {
 
-               System.out.println("trying w" + red.bearing2 + "<-red bearing, red speed ->" + red.speed);
+               System.out.println("trying w" + red.bearing + "<-red bearing, red speed ->" + red.speed);
                red.speed(1);
             } else if (code == GLFW_KEY_S) {
                System.out.println("trying s");
@@ -301,6 +301,10 @@ public class Ex3 extends Basic {
                new Triple( tank.x, tank.y, tank.z), tank.bearing) );
          tank.ammunition -= 1;
             }
+   
+   public void
+
+
    }
 
 

@@ -62,13 +62,13 @@ public class Tank extends Box {
 
         this.b = new Triangle( 
                     new Vertex(
-                        new Triple( (this.x + .1f),(this.y + .1f), this.z),
+                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
                         this.color),
                     new Vertex(
-                        new Triple( (this.x - .1f),(this.y - .1f), this.z),
+                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
                         this.color),
                     new Vertex(
-                        new Triple( (this.x - .1f),(this.y + .1f), this.z),
+                        new Triple( (this.x - this.width),(this.y + this.height), this.z),
                         this.color));
    
         this.center = new Point( (int) this.x, (int) this.y);
@@ -76,17 +76,7 @@ public class Tank extends Box {
 
     }
 
-    // public double middle_of_vector_pairs(
-	//     double x1, 
-	//     double y1, 
-	//     double x2, 
-	//     double y2) {
-	        
-	//     double ac = Math.abs(y2 - y1);
-	//     double cb = Math.abs(x2 - x1);
-	        
-	//     return Math.hypot(ac, cb) / 2;
-    // }
+
 
     public float getAngle(Point target) {
         float angle = (float) Math.toDegrees(Math.atan2(target.y - y, target.x - x));
