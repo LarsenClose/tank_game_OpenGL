@@ -37,7 +37,7 @@ public class Ex3 extends Basic {
 
    private int positionHandle, colorHandle;
    private FloatBuffer positionBuffer, colorBuffer;
-   private FloatBuffer positionBufferWall, colorBufferWall;
+
 
    // construct basic application with given title, pixel width and height
    // of drawing area, and frames per second
@@ -69,8 +69,8 @@ public class Ex3 extends Basic {
 
       boxes.add(new Box(new Triple(.3, .7, 0)));
 
-      boxes.add(new Wall(new Triple(-.92, .92, 0), new Triple(.92, .92, 0), new Triple(.92, -.92, 0),
-            new Triple(-.92, .92, 0)));
+      // boxes.add(new Wall(new Triple(-.92, .92, 0), new Triple(.92, .92, 0), new Triple(.92, -.92, 0),
+      //       new Triple(-.92, .92, 0)));
    } // keep last element to pop and render
 
    protected void init() {
@@ -112,10 +112,9 @@ public class Ex3 extends Basic {
       System.out.println("have position handle " + positionHandle + " and color handle " + colorHandle);
 
       // create the buffers (data doesn't matter so much, just the size)
-      positionBuffer = Util.createFloatBuffer(MAX * 12 * 12);
-      colorBuffer = Util.createFloatBuffer(MAX * 12 * 12);
-      positionBufferWall = Util.createFloatBuffer(MAX * 12 * 12);
-      colorBufferWall = Util.createFloatBuffer(MAX * 12 * 12);
+      positionBuffer = Util.createFloatBuffer(MAX * 15 * 15);
+      colorBuffer = Util.createFloatBuffer(MAX * 15 * 15);
+
 
       // set the background color
       GL11.glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -137,7 +136,7 @@ public class Ex3 extends Basic {
                GL11.glClearColor(0, 0, 1, 0);
             } else if (code == GLFW_KEY_W) {
 
-               System.out.println("trying w" + red.bearing + "<-red bearing, red speed ->" + red.speed);
+               System.out.println("trying w" + red.bearing2 + "<-red bearing, red speed ->" + red.speed);
                red.speed(1);
             } else if (code == GLFW_KEY_S) {
                System.out.println("trying s");
@@ -154,15 +153,17 @@ public class Ex3 extends Basic {
                fire(red);
                System.out.println("trying lcntrl");
             }
+            // Blue tank events
 
-            else if (code == GLFW_KEY_W) {
-               // blue.speed(1);
-            } else if (code == GLFW_KEY_S) {
-               // blue.speed(0);
-            } else if (code == GLFW_KEY_A) {
-               // blue.turn("left");
-            } else if (code == GLFW_KEY_D) {
-               // blue.turn("right");
+            else if (code ==  GLFW_KEY_UP  ) {
+               blue.speed(1);
+               System.out.println("trying w" + blue.bearing + "<-blue bearing, blue speed ->" + blue.speed);
+            } else if (code == GLFW_KEY_DOWN  ) {
+               blue.speed(0);
+            } else if (code == GLFW_KEY_LEFT) {
+               blue.turn("left");
+            } else if (code == GLFW_KEY_RIGHT) {
+               blue.turn("right");
             } else if (code == GLFW_KEY_RIGHT_SHIFT) {
                fire(blue);
             }
@@ -191,10 +192,8 @@ public class Ex3 extends Basic {
          if (box.kind == "tank" || box.kind == "bullet"){
             movement(box);
          }
-         
-      
       }
-      }
+  }
 
 
    protected void display() {
@@ -205,14 +204,11 @@ public class Ex3 extends Basic {
       sendData();
 
       // draw the buffers
-      GL11.glDrawArrays(GL11.GL_LINE_LOOP, 0, 4);
-      Util.error("after draw loop");
 
-      GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, boxes.size() * 20);
+
+      GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, boxes.size() * 3);
       Util.error("after draw arrays");
 
-
-      update();
 
    }
 
@@ -236,16 +232,12 @@ public class Ex3 extends Basic {
 
       // trying to handle having one quad in my boxes
 
-      positionBufferWall.rewind();
-      colorBufferWall.rewind();
-      boxes.get(boxes.size() - 1).sendData(positionBufferWall, colorBufferWall);
-      positionBufferWall.rewind();
-      colorBufferWall.rewind();
+
 
       // actually get the data in positionBuffer, colorBuffer):
       positionBuffer.rewind();
       colorBuffer.rewind();
-      for (int k = 0; k < boxes.size() - 1; k++) {
+      for (int k = 0; k < boxes.size(); k++) {
 
          boxes.get(k).sendData(positionBuffer, colorBuffer);
 
@@ -304,7 +296,7 @@ public class Ex3 extends Basic {
 
    public void fire(Tank tank) {
       if (tank.ammunition > 0){
-         boxes.add( 
+         boxes.add(
             new Bullet(
                new Triple( tank.x, tank.y, tank.z), tank.bearing) );
          tank.ammunition -= 1;
