@@ -39,6 +39,13 @@ public class Ex3 extends Basic {
 
    public Box box;
 
+   public double top;
+   public double right;
+   public double bottom;
+   public double left;
+
+
+
    private int positionHandle, colorHandle;
    private FloatBuffer positionBuffer, colorBuffer;
 
@@ -47,10 +54,15 @@ public class Ex3 extends Basic {
    public Ex3(String appTitle, int pw, int ph, int fps) {
       super(appTitle, pw, ph, (long) ((1.0 / fps) * 1000000000));
 
+      top = 1 - Constants.wall_depth * 3;
+      right = 1 - Constants.wall_depth * 3;
+      bottom = -1 + Constants.wall_depth * 3;
+      left = -1 + Constants.wall_depth * 3;
+
       boxes = new ArrayList<Box>();
 
-      red_tank = new Tank(Constants.red_start_location, Colors.red);
-      blue_tank = new Tank(Constants.blue_start_location, Colors.blue);
+      red_tank = new Tank(Constants.red_start_location, Colors.red, true);
+      blue_tank = new Tank(Constants.blue_start_location, Colors.blue, false);
 
       boxes.add(red_tank);
       boxes.add(blue_tank);
@@ -194,45 +206,144 @@ public class Ex3 extends Basic {
 
    protected void update() {
 
-      // for (Box<?> box : boxes) {
 
-      // System.out.println(box.kind);
-      // System.out.println(box.bearing);
-      // System.out.println(box.getClass());
-
-      // }
 
       for (int i = 0; i < boxes.size(); i++) {
 
 
          if (boxes.get(i).getClass() == Tank.class) {
-            Tank box = (Tank) boxes.get(i);
-                  System.out.println( box.kind );
-                  System.out.println( box.bearing );
-                  System.out.println( box.speed );
-                  System.out.println( box.x );
-                  System.out.println( box.y );
 
-          
+            // initialize outer loop if class tank
+            Tank box = (Tank) boxes.get(i);
+
             double next_x = (box.x + Math.cos(Math.toRadians(box.bearing)) * box.speed);
             double next_y = (box.y + Math.sin(Math.toRadians(box.bearing)) * box.speed);
 
+            double next_x_range_start = next_x - (.5 * (box.width));
+            double next_x_range_stop = next_x + (.5 * (box.width));
+
+            double next_y_range_start = next_y - (.5 * (box.height));
+            double next_y_range_stop = next_y + (.5 * (box.height));
 
 
-            box.updateLocation(next_x, next_y);
+            //    first check the boundary domain
+            if (  (next_y_range_stop >= top) ||
+                  (next_y_range_start <= bottom) ||
+                  (next_x_range_start <= left) ||
+                  (next_x_range_stop >= right))
+            {
+               box.speed = 0;
+               box.updateLocation(box.x, box.y);
+               
+            }
+            // start inner loop
+            for (int iIn = 0; iIn < boxes.size(); iIn++){
+               if (boxes.get(iIn).getClass() == Tank.class && boxes.get(i)!= boxes.get(iIn)) {
 
+
+                     // initialize inner if tank and not self
+                     Tank boxIn = (Tank) boxes.get(iIn);
+
+                     double x_start = boxIn.x - (.5 * (boxIn.width));
+                     double x_stop = boxIn.x + (.5 * (boxIn.width));
+
+                     double y_start = boxIn.y - (.5 * (boxIn.height));
+                     double y_stop = boxIn.y + (.5 * (boxIn.height));
+
+                        // if no collision between tanks update else stop
+                  if (
+                     next_x_range_stop < x_start ||
+                     next_x_range_start > x_stop ||
+                     next_y_range_stop < y_start ||
+                     next_y_range_start > y_stop)
+                     {
+                        box.updateLocation(next_x, next_y);
+                     }
+                  else  
+                     {
+                        box.speed = 0;
+                        box.updateLocation(box.x, box.y);
+                        boxIn.speed = 0;
+                     }
+               } // end tank tank collision check
+
+               //start tank outer bullet inner check
+               else if (boxes.get(iIn).getClass() == Bullet.class){
+                  Bullet boxIn = (Bullet) boxes.get(iIn);
+
+                  double x_start = boxIn.x - (.5 * (boxIn.width));
+                  double x_stop = boxIn.x + (.5 * (boxIn.width));
+
+                  double y_start = boxIn.y - (.5 * (boxIn.height));
+                  double y_stop = boxIn.y + (.5 * (boxIn.height));
+               if (
+                  next_x_range_stop < x_start ||
+                  next_x_range_start > x_stop ||
+                  next_y_range_stop < y_start ||
+                  next_y_range_start > y_stop)
+                  {
+                     box.updateLocation(next_x, next_y); // update if no collision
+                  }
+               else
+                  {
+                        if (box.is_red){
+                           System.out.println("Congratulations! Blue tank has won the game, the red tank has been destroyed.");
+                           System.exit(0);
+
+                        }
+                        else{
+                           System.out.println("Congratulations! Red tank has won the game, the blue tank has been destroyed.");
+                           System.exit(0);
+                        }
+
+                  }
+
+
+
+               } // end tank outer, bullet inner check
+
+
+
+            } // end inner loop
+         
             
-         }
+            
+            
+         }  // end outer loop initialized as tank
+
+         //    outer loop if bullet
          if (boxes.get(i).getClass() == Bullet.class) {
+
+            // initialize variables
             Bullet box = (Bullet) boxes.get(i);
-            double next_x = box.x + Math.cos(Math.toRadians(box.bearing) * box.speed);
-            double next_y = box.y + Math.sin(Math.toRadians(box.bearing) * box.speed);
-            box.x = next_x;
-            box.y = next_y;
-         }
-         if (boxes.get(i).getClass() == Border.class) {
-            Border box = (Border) boxes.get(i);
-         }
+
+            double next_x = (box.x + Math.cos(Math.toRadians(box.bearing)) * box.speed);
+            double next_y = (box.y + Math.sin(Math.toRadians(box.bearing)) * box.speed);
+
+            double next_x_range_start = next_x - (.5 * (box.width));
+            double next_x_range_stop = next_x + (.5 * (box.width));
+
+            double next_y_range_start = next_y - (.5 * (box.height));
+            double next_y_range_stop = next_y + (.5 * (box.height));
+
+
+            // first check boundary 
+            if (  (next_y_range_stop >= top) ||
+                  (next_y_range_start <= bottom) ||
+                  (next_x_range_start <= left) ||
+                  (next_x_range_stop >= right))
+                  {  
+                     box.speed = 0;             
+                     box.updateLocation(box.x, box.y);
+                  }
+            else{
+               box.updateLocation(next_x, next_y);
+            }
+
+         } // end outer bullet
+
+
+         // outer loop class box
          if (boxes.get(i).getClass() == Box.class) {
             Box box = (Box) boxes.get(i);
          }
@@ -376,8 +487,8 @@ public class Ex3 extends Basic {
          // System.out.println((tank.bearing));
          // System.out.println(tank.x +Math.sin(Math.toRadians(tank.bearing)*.5));
 
-         boxes.add(new Bullet(new Triple(tank.x + (Math.sin(Math.toRadians(tank.bearing)) * .5),
-               tank.y + (Math.cos(Math.toRadians(tank.bearing)) * .5), tank.z), tank.bearing));
+         boxes.add(new Bullet(new Triple(tank.x + (Math.sin(Math.toRadians(tank.bearing)) * .4),
+               tank.y + (Math.cos(Math.toRadians(tank.bearing)) * .4), tank.z), tank.bearing));
          tank.ammunition -= 1;
       }
    }

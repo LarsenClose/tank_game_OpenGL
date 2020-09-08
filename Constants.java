@@ -3,16 +3,16 @@ public class Constants {
 
     static float bullet_width = .01f;
     static float bullet_height = .01f;
-    static float bullet_speed = .0002f;
+    static float bullet_speed = .0009f;
     static int starting_ammunition = 100;
 
     static float speed_increment = .0001f;
-    static float degree_change = 15;
+    static float degree_change = 8;
 
     static float basic_width = .05f;
     static float basic_height = .1f;
 
-    static float wall_depth = .02f;
+    static double wall_depth = .02f;
 
 
     static float tank_width = .1f;

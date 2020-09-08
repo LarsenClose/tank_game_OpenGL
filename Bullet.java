@@ -35,30 +35,11 @@ public class Bullet extends Box {
 
         this.color = Colors.silver;
 
+        buildTriangles(centered);
+    }
 
-        this.a = new Triangle( 
-                    new Vertex(
-                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        this.color ),
-                    new Vertex(
-                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        this.color ),
-                    new Vertex(
-                        new Triple( (this.x + this.width),(this.y - this.height),this.z),
-                        this.color));
-
-        this.b = new Triangle( 
-                    new Vertex(
-                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        this.color ),
-                    new Vertex(
-                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        this.color ),
-                    new Vertex(
-                        new Triple( (this.x - this.width),(this.y + this.height), this.z),
-                        this.color));
                         
-        }
+        
         // put all the data for this triangle to
         // pb and cb
         public void sendData( FloatBuffer pb, FloatBuffer cb ) {
@@ -69,6 +50,40 @@ public class Bullet extends Box {
             this.b.b.sendData( pb, cb );
             this.b.c.sendData( pb, cb );
         }
+
+        public void updateLocation(Double x, Double y) {
+            buildTriangles(new Triple(x, y, 0));
+        }
+    
+        public void buildTriangles(Triple location){
+            this.x = location.x;
+            this.y = location.y;
+    
+            this.a = new Triangle( 
+                        new Vertex(
+                            new Triple( (this.x + this.width),(this.y + this.height), this.z),
+                            this.color),
+                        new Vertex(
+                            new Triple( (this.x - this.width),(this.y - this.height), this.z),
+                            this.color ),
+                        new Vertex(
+                            new Triple( (this.x + this.width),(this.y - this.height),this.z),
+                            this.color));
+            
+            this.b = new Triangle( 
+                        new Vertex(
+                            new Triple( (this.x + this.width),(this.y + this.height), this.z),
+                            this.color),
+                        new Vertex(
+                            new Triple( (this.x - this.width),(this.y - this.height), this.z),
+                            this.color),
+                        new Vertex(
+                            new Triple( (this.x - this.width),(this.y + this.height), this.z),
+                            this.color));
+        }
+    
+    
+    
 
 
 }

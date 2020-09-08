@@ -26,13 +26,15 @@ public class Tank extends Box {
     public double y;
     public double z;
 
+    public boolean is_red;
+
 
     public Triple color;
 
 
     private Triangle a, b;
 
-    public Tank(Triple centered, Triple colors) {
+    public Tank(Triple centered, Triple colors, boolean is_red) {
 
         this.kind = "tank"; 
         this.speed = 0;
@@ -42,6 +44,8 @@ public class Tank extends Box {
         this.z = centered.z;
 
         this.color = colors;
+
+        this.is_red = is_red;
 
         
 

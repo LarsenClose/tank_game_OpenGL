@@ -10,7 +10,7 @@ public class Border extends Box {
     public float bearing;
 
     public Triple color;
-    private Float depth;
+    public double depth;
 
     private Vertex upLeft;
     private Vertex upRight;
