@@ -1,6 +1,6 @@
 import java.nio.FloatBuffer;
 
-public class Box {
+public class Box<T> {
     public Box() {
         System.out.println("Super");
     }
@@ -16,21 +16,18 @@ public class Box {
     public double y;
     public double z;
 
-
     public Triple color;
-
 
     private Triangle a, b;
     private String orientation;
 
     public Box(Triple centered, String orientation) {
 
-        this.kind = "basic";
+        this.kind = "box";
         this.speed = 0;
         this.bearing = 0f;
 
         this.color = Colors.black;
-
 
         this.speed = 0;
 
@@ -40,15 +37,13 @@ public class Box {
 
         this.orientation = orientation;
 
-        if (this.orientation == "verticle"){
+        if (this.orientation == "verticle") {
             this.width = Constants.basic_width;
             this.height = Constants.basic_height;
-        } 
-        else if (this.orientation == "horizontal"){
+        } else if (this.orientation == "horizontal") {
             this.height = Constants.basic_width;
             this.width = Constants.basic_height;
         }
-
 
         this.a = new Triangle(new Vertex(new Triple((this.x + this.width), (this.y + this.height), this.z), this.color),
                 new Vertex(new Triple((this.x - this.width), (this.y - this.height), this.z), this.color),

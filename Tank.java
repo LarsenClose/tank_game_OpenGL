@@ -5,6 +5,7 @@ import java.awt.Point;
 
 
 public class Tank extends Box {
+    
     public Tank(){
         System.out.println("Super");
     }
@@ -42,33 +43,38 @@ public class Tank extends Box {
 
         this.color = colors;
 
+        
+
+        
+
 
         this.ammunition = Constants.starting_ammunition;
         this.width = Constants.tank_width;
         this.height = Constants.tank_height;
 
+        buildTriangles(centered);
 
-        this.a = new Triangle( 
-                    new Vertex(
-                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        this.color),
-                    new Vertex(
-                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        this.color ),
-                    new Vertex(
-                        new Triple( (this.x + this.width),(this.y - this.height),this.z),
-                        this.color));
+        // this.a = new Triangle( 
+        //             new Vertex(
+        //                 new Triple( (this.x + this.width),(this.y + this.height), this.z),
+        //                 this.color),
+        //             new Vertex(
+        //                 new Triple( (this.x - this.width),(this.y - this.height), this.z),
+        //                 this.color ),
+        //             new Vertex(
+        //                 new Triple( (this.x + this.width),(this.y - this.height),this.z),
+        //                 this.color));
 
-        this.b = new Triangle( 
-                    new Vertex(
-                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        this.color),
-                    new Vertex(
-                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        this.color),
-                    new Vertex(
-                        new Triple( (this.x - this.width),(this.y + this.height), this.z),
-                        this.color));
+        // this.b = new Triangle( 
+        //             new Vertex(
+        //                 new Triple( (this.x + this.width),(this.y + this.height), this.z),
+        //                 this.color),
+        //             new Vertex(
+        //                 new Triple( (this.x - this.width),(this.y - this.height), this.z),
+        //                 this.color),
+        //             new Vertex(
+        //                 new Triple( (this.x - this.width),(this.y + this.height), this.z),
+        //                 this.color));
    
         this.tank_point = new Point( (int) (this.x * 10), (int) (this.y * 10));
         this.origin = new Point(0, 0);
@@ -144,6 +150,40 @@ public class Tank extends Box {
         b.b.sendData(pb, cb);
         b.c.sendData(pb, cb);
     }
+    public void updateLocation(Double x, Double y) {
+        buildTriangles(new Triple(x, y, 0));
+    }
+
+    public void buildTriangles(Triple location){
+        this.x = location.x;
+        this.y = location.y;
+
+        this.a = new Triangle( 
+                    new Vertex(
+                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
+                        this.color),
+                    new Vertex(
+                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
+                        this.color ),
+                    new Vertex(
+                        new Triple( (this.x + this.width),(this.y - this.height),this.z),
+                        this.color));
+        
+        this.b = new Triangle( 
+                    new Vertex(
+                        new Triple( (this.x + this.width),(this.y + this.height), this.z),
+                        this.color),
+                    new Vertex(
+                        new Triple( (this.x - this.width),(this.y - this.height), this.z),
+                        this.color),
+                    new Vertex(
+                        new Triple( (this.x - this.width),(this.y + this.height), this.z),
+                        this.color));
+
+
+
+    }
+
 
 
 }

@@ -3,10 +3,10 @@ public class Constants {
 
     static float bullet_width = .01f;
     static float bullet_height = .01f;
-    static float bullet_speed = .2f;
-    static int starting_ammunition = 15;
+    static float bullet_speed = .0002f;
+    static int starting_ammunition = 100;
 
-    static float speed_increment = .1f;
+    static float speed_increment = .0001f;
     static float degree_change = 15;
 
     static float basic_width = .05f;
@@ -26,5 +26,8 @@ public class Constants {
     static Triple box_location_three = new Triple((double) -.6, (double) .4,(double) 0);
     static Triple box_location_four = new Triple((double) .2, (double) -.7,(double) 0);
 
-    
+    static Triple NW = new Triple(-1, 1, 0);
+    static Triple NE = new Triple(1, 1, 0);
+    static Triple SE = new Triple(1, -1, 0);
+    static Triple SW = new Triple(-1, -1, 0);
 }

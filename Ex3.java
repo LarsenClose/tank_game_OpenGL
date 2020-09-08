@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class Ex3 extends Basic {
 
-private final static int MAX = 10;
+   private final static int MAX = 10;
 
    public static void main(String[] args) {
       Ex3 app = new Ex3("adversarial Euclidean amoeboids", 500, 500, 30);
@@ -36,11 +36,11 @@ private final static int MAX = 10;
    private ArrayList<Box> boxes;
    private Tank red_tank;
    private Tank blue_tank;
-   
+
+   public Box box;
 
    private int positionHandle, colorHandle;
    private FloatBuffer positionBuffer, colorBuffer;
-
 
    // construct basic application with given title, pixel width and height
    // of drawing area,northWalland frames per second
@@ -55,17 +55,21 @@ private final static int MAX = 10;
       boxes.add(red_tank);
       boxes.add(blue_tank);
 
+      Box box1 = new Box(Constants.box_location_one, "horizontal");
+      Box box2 = new Box(Constants.box_location_two, "horizontal");
+      Box box3 = new Box(Constants.box_location_three, "verticle");
+      Box box4 = new Box(Constants.box_location_four, "verticle");
 
-      boxes.add(new Box(Constants.box_location_one, "horizontal"));
-      boxes.add(new Box(Constants.box_location_two, "horizontal"));
-      boxes.add(new Box(Constants.box_location_three, "verticle"));
-      boxes.add(new Box(Constants.box_location_four, "verticle"));
+      boxes.add(box1);
+      boxes.add(box2);
+      boxes.add(box3);
+      boxes.add(box4);
 
+      Border border = new Border(Constants.NW, Constants.NE, Constants.SE, Constants.SW);
 
+      boxes.add(border);
 
-      boxes.add(new Border(new Triple(-1, 1, 0), new Triple(1, 1, 0), new Triple(1, -1, 0),
-            new Triple(-1, -1, 0)));
-   } 
+   }
 
    protected void init() {
       String vertexShaderCode = "#version 330 core\n" + "layout (location = 0 ) in vec3 vertexPosition;\n"
@@ -109,10 +113,8 @@ private final static int MAX = 10;
       positionBuffer = Util.createFloatBuffer(MAX * 15 * 15);
       colorBuffer = Util.createFloatBuffer(MAX * 15 * 15);
 
-
       // set the background color
       GL11.glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
-
 
    }
 
@@ -122,19 +124,19 @@ private final static int MAX = 10;
       while (InputInfo.size() > 0) {
          InputInfo info = InputInfo.get();
 
-
          if (info.kind == 'k' && (info.action == GLFW_PRESS || info.action == GLFW_REPEAT)) {
             int code = info.code;
 
             if (code == GLFW_KEY_B) {
-               GL11.glClearColor(0, 0, 1, 0);}
+               GL11.glClearColor(0, 0, 1, 0);
+            }
 
             else if (code == GLFW_KEY_W) {
-               System.out.println("trying w \n" + red_tank.bearing + " <-red_tank bearing, red_tank speed -> " + 
-                                               red_tank.speed + "\nlocation: "+ red_tank.x +", " + red_tank.y);
+               System.out.println("trying w \n" + red_tank.bearing + " <-red_tank bearing, red_tank speed -> "
+                     + red_tank.speed + "\nlocation: " + red_tank.x + ", " + red_tank.y);
 
                red_tank.speed += Constants.speed_increment;
-            
+
             } else if (code == GLFW_KEY_S) {
                red_tank.speed = 0;
 
@@ -142,7 +144,7 @@ private final static int MAX = 10;
 
                red_tank.bearing += Constants.degree_change;
                normalize(red_tank);
-               
+
             } else if (code == GLFW_KEY_D) {
 
                red_tank.bearing -= Constants.degree_change;
@@ -152,16 +154,15 @@ private final static int MAX = 10;
                fire(red_tank);
             }
 
-
             // Blue tank events
 
-            else if (code ==  GLFW_KEY_UP  ) {
-               System.out.println("trying w \n" + blue_tank.bearing + " <-blue bearing, blue speed -> " + blue_tank.speed
-               + "\nlocation: "+ blue_tank.x +", " + blue_tank.y);
+            else if (code == GLFW_KEY_UP) {
+               System.out.println("trying w \n" + blue_tank.bearing + " <-blue bearing, blue speed -> "
+                     + blue_tank.speed + "\nlocation: " + blue_tank.x + ", " + blue_tank.y);
 
                blue_tank.speed += Constants.speed_increment;
 
-            } else if (code == GLFW_KEY_DOWN  ) {
+            } else if (code == GLFW_KEY_DOWN) {
                blue_tank.speed = 0;
             } else if (code == GLFW_KEY_LEFT) {
 
@@ -191,30 +192,101 @@ private final static int MAX = 10;
 
    }
 
-
    protected void update() {
 
-      
-      // for (Box box : boxes){
-      //    if (box.color == Colors.red){
-      //       Tank red = (Tank) box;
-      //    }
-      //    if (box.color == Colors.blue){
-      //       Tank blue = (Tank) box;
-      //    }
+      // for (Box<?> box : boxes) {
+
+      // System.out.println(box.kind);
+      // System.out.println(box.bearing);
+      // System.out.println(box.getClass());
+
       // }
 
+      for (int i = 0; i < boxes.size(); i++) {
 
-      // Box positive = (Box) boxes.get(2);
-      // Box netative = (Box) boxes.get(3);
 
-      // for (Box box : boxes){
-      //    if (box.kind == "tank" || box.kind == "bullet"){
-      //       movement(box);
-      //    }
+         if (boxes.get(i).getClass() == Tank.class) {
+            Tank box = (Tank) boxes.get(i);
+                  System.out.println( box.kind );
+                  System.out.println( box.bearing );
+                  System.out.println( box.speed );
+                  System.out.println( box.x );
+                  System.out.println( box.y );
+
+          
+            double next_x = (box.x + Math.cos(Math.toRadians(box.bearing)) * box.speed);
+            double next_y = (box.y + Math.sin(Math.toRadians(box.bearing)) * box.speed);
+
+
+
+            box.updateLocation(next_x, next_y);
+
+            
+         }
+         if (boxes.get(i).getClass() == Bullet.class) {
+            Bullet box = (Bullet) boxes.get(i);
+            double next_x = box.x + Math.cos(Math.toRadians(box.bearing) * box.speed);
+            double next_y = box.y + Math.sin(Math.toRadians(box.bearing) * box.speed);
+            box.x = next_x;
+            box.y = next_y;
+         }
+         if (boxes.get(i).getClass() == Border.class) {
+            Border box = (Border) boxes.get(i);
+         }
+         if (boxes.get(i).getClass() == Box.class) {
+            Box box = (Box) boxes.get(i);
+         }
+        
+
+      // System.out.println( box.kind );
+      // System.out.println( box.bearing );
+
+      }
+
+      // if (box.getClass() == Tank.class || box.getClass() == Bullet.class){
+      // box = (Tank) box;
+
+      // System.out.println( box.kind );
+      // System.out.println( box.bearing );
+
       // }
-  }
 
+      // double next_x = box.x + Math.cos(Math.toRadians(box.bearing) * box.speed);
+      // double next_y = box.y + Math.cos(Math.toRadians(box.bearing) * box.speed);
+
+      // double next_x_range_start = next_x - (.5 * (box.width));
+      // double next_x_range_stop = next_x + (.5 * (box.width));
+
+      // double next_y_range_start = next_y - (.5 * (box.height));
+      // double next_y_range_stop = next_y + (.5 * (box.height));
+
+      // for (Box boxIn : boxes){
+      // double x_start = boxIn.x - (.5 * (boxIn.width));
+      // double x_stop = boxIn.x + (.5 * (boxIn.width));
+
+      // double y_start = boxIn.y - (.5 * (boxIn.height));
+      // double y_stop = boxIn.y + (.5 * (boxIn.height));
+
+      // if (
+      // next_x_range_start < x_start ||
+      // next_x_range_stop > x_stop ||
+      // next_y_range_start < y_start ||
+      // next_y_range_stop < y_stop)
+      // {
+      // box.x = next_x;
+      // box.y = next_y;
+      // }
+
+      // if (
+      // (next_x_range_start >= x_start) &&
+
+      // (next_x_range_stop <= x_stop) &&
+
+      // (next_y_range_start >= y_start) &&
+      // (next_y_range_stop <= y_stop)) {}
+      // }
+
+   }
 
    protected void display() {
       super.display(); // just clears the color and depth buffers
@@ -225,10 +297,8 @@ private final static int MAX = 10;
 
       // draw the buffers
 
-
       GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, (48 + boxes.size() * 30));
       Util.error("after draw arrays");
-
 
    }
 
@@ -251,8 +321,6 @@ private final static int MAX = 10;
       // connect data to the VBO's
 
       // trying to handle having one quad in my boxes
-
-
 
       // actually get the data in positionBuffer, colorBuffer):
       positionBuffer.rewind();
@@ -295,21 +363,21 @@ private final static int MAX = 10;
       // map index 1 to the color buffer
       GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorHandle);
       Util.error("after bind color buffer");
-      GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);    
+      GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
       Util.error("after do color vertex attrib pointer");
 
    }// sendData
 
-   // given an array with data in it and an allocbox.x 
+   // given an array with data in it and an allocbox.x
 
    public void fire(Tank tank) {
-      if (tank.ammunition > 0){
-         
-         boxes.add(
-            new Bullet(
-               new Triple( tank.x + Math.cos(Math.toRadians(tank.bearing) * .5),
-                        tank.y + (Math.sin(Math.toRadians(tank.bearing))) * .5, 
-                        tank.z), tank.bearing) );
+      if (tank.ammunition > 0) {
+
+         // System.out.println((tank.bearing));
+         // System.out.println(tank.x +Math.sin(Math.toRadians(tank.bearing)*.5));
+
+         boxes.add(new Bullet(new Triple(tank.x + (Math.sin(Math.toRadians(tank.bearing)) * .5),
+               tank.y + (Math.cos(Math.toRadians(tank.bearing)) * .5), tank.z), tank.bearing));
          tank.ammunition -= 1;
       }
    }
@@ -319,12 +387,14 @@ private final static int MAX = 10;
       if (tank.bearing < 0) {
          tank.bearing += 360;
       }
-      
+
       tank.bearing = tank.bearing % 360;
-
-
-
    }
 
+   // public double getRange(double single_axis){
+   // return double next_x_range_start = next_x - (.5 * (box.width)), double
+   // next_x_range_stop = next_x + (.5 * (box.width));
+
+   // }
 
 }// Ex3

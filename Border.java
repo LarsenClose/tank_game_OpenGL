@@ -5,11 +5,11 @@ public class Border extends Box {
         System.out.println("Super");
     }
 
-    public String kind;
+    public String kind = "border";
     public float speed;
     public float bearing;
 
-    private Triple color;
+    public Triple color;
     private Float depth;
 
     private Vertex upLeft;
@@ -38,6 +38,7 @@ public class Border extends Box {
         this.bearing = 0;
         this.color = Colors.cyan;
         this.depth = Constants.wall_depth;
+
 
         this.upLeft = new Vertex(uL, this.color);
         this.upRight = new Vertex(uR, this.color);
