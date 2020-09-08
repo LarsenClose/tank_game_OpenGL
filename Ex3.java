@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 public class Ex3 extends Basic {
 
-   private final static int MAX = 10;
+private final static int MAX = 10;
 
    public static void main(String[] args) {
-      Ex3 app = new Ex3("euclidean amoeboid adversaries", 500, 500, 30);
+      Ex3 app = new Ex3("adversarial Euclidean amoeboids", 500, 500, 30);
       app.start();
    }// main
 
@@ -34,40 +34,34 @@ public class Ex3 extends Basic {
    private int vao; // handle to the vertex array object
 
    private ArrayList<Box> boxes;
+   private Tank red_tank;
+   private Tank blue_tank;
+   
 
    private int positionHandle, colorHandle;
    private FloatBuffer positionBuffer, colorBuffer;
 
 
    // construct basic application with given title, pixel width and height
-   // of drawing area, and frames per second
+   // of drawing area,northWalland frames per second
    public Ex3(String appTitle, int pw, int ph, int fps) {
       super(appTitle, pw, ph, (long) ((1.0 / fps) * 1000000000));
 
       boxes = new ArrayList<Box>();
 
-      boxes.add(new Tank(new Triple(-.8, -.8, 0), Colors.red));
+      red_tank = new Tank(Constants.red_start_location, Colors.red);
+      blue_tank = new Tank(Constants.blue_start_location, Colors.blue);
 
-      boxes.add(new Tank(new Triple(.8, .8, 0), Colors.blue));
+      boxes.add(red_tank);
+      boxes.add(blue_tank);
 
-      // boxes.add(
-      // new Bullet(
-      // new Triple( -.09, .09, 0), 0f, 0f, boxes.get(0)) );
 
-      // boxes.add(
-      // new Bullet(
-      // new Triple( .09, -.09, 0), 0f, private
-      // boxes.add(
-      // new Bullet(
-      // new Triple( .9, -1, 0), 0f, 0f, boxes.get(1)) );
+      boxes.add(new Box(Constants.box_location_one, "horizontal"));
+      boxes.add(new Box(Constants.box_location_two, "horizontal"));
+      boxes.add(new Box(Constants.box_location_three, "verticle"));
+      boxes.add(new Box(Constants.box_location_four, "verticle"));
 
-      // boxes.add(
-      // new Bullet(
-      // new Triple( -1, -1, 0), 0f, 0f, boxes.get(1)) );
 
-      boxes.add(new Box(new Triple(-.1, -.1, 0)));
-
-      boxes.add(new Box(new Triple(.3, .7, 0)));
 
       boxes.add(new Border(new Triple(-1, 1, 0), new Triple(1, 1, 0), new Triple(1, -1, 0),
             new Triple(-1, -1, 0)));
@@ -119,53 +113,68 @@ public class Ex3 extends Basic {
       // set the background color
       GL11.glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
+
    }
 
    protected void processInputs() {
-      // process all waiting input events
+      // process all waiting input eventsd
+
       while (InputInfo.size() > 0) {
          InputInfo info = InputInfo.get();
 
-         Tank red = (Tank) boxes.get(0);
-         Tank blue = (Tank) boxes.get(1);
 
          if (info.kind == 'k' && (info.action == GLFW_PRESS || info.action == GLFW_REPEAT)) {
             int code = info.code;
 
             if (code == GLFW_KEY_B) {
-               GL11.glClearColor(0, 0, 1, 0);
-            } else if (code == GLFW_KEY_W) {
+               GL11.glClearColor(0, 0, 1, 0);}
 
-               System.out.println("trying w" + red.bearing + "<-red bearing, red speed ->" + red.speed);
-               red.speed(1);
+            else if (code == GLFW_KEY_W) {
+               System.out.println("trying w \n" + red_tank.bearing + " <-red_tank bearing, red_tank speed -> " + 
+                                               red_tank.speed + "\nlocation: "+ red_tank.x +", " + red_tank.y);
+
+               red_tank.speed += Constants.speed_increment;
+            
             } else if (code == GLFW_KEY_S) {
-               System.out.println("trying s");
-               red.speed(0);
-            } else if (code == GLFW_KEY_A) {
-               System.out.println("trying a/left");
+               red_tank.speed = 0;
 
-               red.turn("left");
+            } else if (code == GLFW_KEY_A) {
+
+               red_tank.bearing += Constants.degree_change;
+               normalize(red_tank);
+               
             } else if (code == GLFW_KEY_D) {
-               System.out.println("trying d/right");
-               red.turn("right");
+
+               red_tank.bearing -= Constants.degree_change;
+               normalize(red_tank);
 
             } else if (code == GLFW_KEY_LEFT_CONTROL) {
-               fire(red);
-               System.out.println("trying lcntrl");
+               fire(red_tank);
             }
+
+
             // Blue tank events
 
             else if (code ==  GLFW_KEY_UP  ) {
-               blue.speed(1);
-               System.out.println("trying w" + blue.bearing + "<-blue bearing, blue speed ->" + blue.speed);
+               System.out.println("trying w \n" + blue_tank.bearing + " <-blue bearing, blue speed -> " + blue_tank.speed
+               + "\nlocation: "+ blue_tank.x +", " + blue_tank.y);
+
+               blue_tank.speed += Constants.speed_increment;
+
             } else if (code == GLFW_KEY_DOWN  ) {
-               blue.speed(0);
+               blue_tank.speed = 0;
             } else if (code == GLFW_KEY_LEFT) {
-               blue.turn("left");
+
+               blue_tank.bearing += Constants.degree_change;
+               normalize(blue_tank);
+
             } else if (code == GLFW_KEY_RIGHT) {
-               blue.turn("right");
+
+               blue_tank.bearing -= Constants.degree_change;
+               normalize(blue_tank);
+
             } else if (code == GLFW_KEY_RIGHT_SHIFT) {
-               fire(blue);
+               fire(blue_tank);
             }
 
          } // input event is a key
@@ -185,14 +194,25 @@ public class Ex3 extends Basic {
 
    protected void update() {
 
+      
+      // for (Box box : boxes){
+      //    if (box.color == Colors.red){
+      //       Tank red = (Tank) box;
+      //    }
+      //    if (box.color == Colors.blue){
+      //       Tank blue = (Tank) box;
+      //    }
+      // }
+
+
       // Box positive = (Box) boxes.get(2);
       // Box netative = (Box) boxes.get(3);
 
-      for (Box box : boxes){
-         if (box.kind == "tank" || box.kind == "bullet"){
-            movement(box);
-         }
-      }
+      // for (Box box : boxes){
+      //    if (box.kind == "tank" || box.kind == "bullet"){
+      //       movement(box);
+      //    }
+      // }
   }
 
 
@@ -206,7 +226,7 @@ public class Ex3 extends Basic {
       // draw the buffers
 
 
-      GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, boxes.size() * 3);
+      GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, (48 + boxes.size() * 30));
       Util.error("after draw arrays");
 
 
@@ -275,34 +295,33 @@ public class Ex3 extends Basic {
       // map index 1 to the color buffer
       GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorHandle);
       Util.error("after bind color buffer");
-      GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
+      GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);    
       Util.error("after do color vertex attrib pointer");
 
    }// sendData
 
-   // given an array with data in it and an allocated buffer,
-   // overwrite buffer contents with array data
-   private void sendArrayToBuffer(float[] array, FloatBuffer buffer) {
-      buffer.rewind();
-      for (int k = 0; k < array.length; k++) {
-         buffer.put(array[k]);
-      }
-   }// sendArrayToBuffer
-
-   public void movement(Box box) {
-      box.x = box.x + (Math.cos(Math.toRadians(box.bearing)) * box.speed);
-      box.y = box.y + (Math.sin(Math.toRadians(box.bearing)) * box.speed);
-   }
+   // given an array with data in it and an allocbox.x 
 
    public void fire(Tank tank) {
       if (tank.ammunition > 0){
+         
          boxes.add(
             new Bullet(
-               new Triple( tank.x, tank.y, tank.z), tank.bearing) );
+               new Triple( tank.x + Math.cos(Math.toRadians(tank.bearing) * .5),
+                        tank.y + (Math.sin(Math.toRadians(tank.bearing))) * .5, 
+                        tank.z), tank.bearing) );
          tank.ammunition -= 1;
-            }
-   
-   public void
+      }
+   }
+
+   public void normalize(Tank tank) {
+
+      if (tank.bearing < 0) {
+         tank.bearing += 360;
+      }
+      
+      tank.bearing = tank.bearing % 360;
+
 
 
    }

@@ -9,34 +9,32 @@ public class Tank extends Box {
         System.out.println("Super");
     }
 
-
+    public String kind;
     public float speed;
+    public Float bearing;
+    public Float width;
+    public Float height;
 
     public float ammunition;
-    public String kind;
+
+    public Point tank_point;
+    public Point origin;
 
     // center
     public double x;
     public double y;
     public double z;
 
-    // center as point
-    public Point center;
 
+    public Triple color;
 
-    private Triple color;
-
-    private Float width;
-    private Float height;
-    public Float bearing;
 
     private Triangle a, b;
 
     public Tank(Triple centered, Triple colors) {
 
+        this.kind = "tank"; 
         this.speed = 0;
-        this.ammunition = Constants.starting_ammunition;
-        this.kind = "tank";
 
         this.x = centered.x;
         this.y = centered.y;
@@ -45,6 +43,7 @@ public class Tank extends Box {
         this.color = colors;
 
 
+        this.ammunition = Constants.starting_ammunition;
         this.width = Constants.tank_width;
         this.height = Constants.tank_height;
 
@@ -71,41 +70,62 @@ public class Tank extends Box {
                         new Triple( (this.x - this.width),(this.y + this.height), this.z),
                         this.color));
    
-        this.center = new Point( (int) this.x, (int) this.y);
-        this.bearing = getAngle(this.center);
+        this.tank_point = new Point( (int) (this.x * 10), (int) (this.y * 10));
+        this.origin = new Point(0, 0);
+        
+        float starting_bearing = (float) getAngle(this.x, this.y, 0d, 0d);
+
+        this.bearing = starting_bearing;
+        
 
     }
 
 
 
-    public float getAngle(Point target) {
-        float angle = (float) Math.toDegrees(Math.atan2(target.y - y, target.x - x));
+    // public float getAngle(Point origin, Point target) {
+
+    //     double theta = Math.atan2(target.y - origin.y, target.x - origin.x);
+
+    //     theta += Math.PI/2.0;
+
+    //     double angle = Math.toDegrees(theta);
+
     
-        if(angle < 0){
-            angle += 360;
-        }
+    //     if(angle < 0){
+    //         angle += 360;
+    //     }
     
+    //     return (float) angle;
+    // }
+
+
+    public double getAngle(double x1, double y1, double x2, double y2)
+    {
+        double angle = Math.toDegrees(Math.atan2(x2 - x1, y2 - y1));
+        // Keep angle between 0 and 360
+        angle = angle + Math.ceil( -angle / 360 ) * 360;
+
         return angle;
     }
 
-    public void speed(int up_or_down){
-        if (up_or_down == 1 ) {
-            this.speed += Constants.speed_increment;
-        }
-        else if (up_or_down == 0) {
-            this.speed = 0;
-        }
+    // public void speed(int up_or_down){
+    //     if (up_or_down == 1 ) {
+    //         this.speed += Constants.speed_increment;
+    //     }
+    //     else if (up_or_down == 0) {
+    //         this.speed = 0;
+    //     }
 
-    }
+    // }
 
-    public void turn(String direction){
-        if (direction == "left" ) {
-            this.bearing += Constants.degree_change;
-        }
-        else if (direction == "right") {
-            this.bearing -= Constants.degree_change;
-        }
-    }
+    // public void turn(String direction){
+    //     if (direction == "left" ) {
+    //         this.bearing += Constants.degree_change;
+    //     }
+    //     else if (direction == "right") {
+    //         this.bearing -= Constants.degree_change;
+    //     }
+    // }
 
     // public void fire(int round){
     //     if (ammunition >0){

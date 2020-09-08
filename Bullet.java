@@ -15,6 +15,7 @@ public class Bullet extends Box {
     public Float width;
     public Float height;
     public Float bearing;
+    public Triple color;
 
     private Triangle a, b;
 
@@ -32,28 +33,30 @@ public class Bullet extends Box {
         this.height = Constants.bullet_height;
         this.speed = Constants.bullet_speed;
 
+        this.color = Colors.silver;
+
 
         this.a = new Triangle( 
                     new Vertex(
                         new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        Colors.silver ),
+                        this.color ),
                     new Vertex(
                         new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        Colors.silver ),
+                        this.color ),
                     new Vertex(
                         new Triple( (this.x + this.width),(this.y - this.height),this.z),
-                        Colors.silver));
+                        this.color));
 
         this.b = new Triangle( 
                     new Vertex(
                         new Triple( (this.x + this.width),(this.y + this.height), this.z),
-                        Colors.silver ),
+                        this.color ),
                     new Vertex(
                         new Triple( (this.x - this.width),(this.y - this.height), this.z),
-                        Colors.silver ),
+                        this.color ),
                     new Vertex(
                         new Triple( (this.x - this.width),(this.y + this.height), this.z),
-                        Colors.silver));
+                        this.color));
                         
         }
         // put all the data for this triangle to

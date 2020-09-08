@@ -5,9 +5,12 @@ public class Border extends Box {
         System.out.println("Super");
     }
 
-    private String kind;
+    public String kind;
+    public float speed;
+    public float bearing;
+
     private Triple color;
-    private Float width;
+    private Float depth;
 
     private Vertex upLeft;
     private Vertex upRight;
@@ -31,36 +34,38 @@ public class Border extends Box {
     public Border(Triple uL, Triple uR, Triple dR, Triple dL) {
 
         this.kind = "wall";
+        this.speed = 0;
+        this.bearing = 0;
         this.color = Colors.cyan;
-        this.width = Constants.wall_width;
+        this.depth = Constants.wall_depth;
 
         this.upLeft = new Vertex(uL, this.color);
         this.upRight = new Vertex(uR, this.color);
         this.dnRight = new Vertex(dR, this.color);
         this.dnLeft = new Vertex(dL, this.color);
 
-        // Vertices for north wall minus the wall_width constant
-        this.northEast = new Vertex(new Triple(this.upRight.position.x, this.upRight.position.y - this.width, 0),
+        // Vertices for north wall minus the wall_depth constant
+        this.northEast = new Vertex(new Triple(this.upRight.position.x, this.upRight.position.y - this.depth, 0),
                 this.color);
-        this.northWest = new Vertex(new Triple(this.upLeft.position.x, this.upLeft.position.y - this.width, 0),
-                this.color);
-
-        // Vertices for east wall minus the wall_width constant
-        this.eastSouth = new Vertex(new Triple(this.dnRight.position.x - this.width, this.dnRight.position.y, 0),
-                this.color);
-        this.eastNorth = new Vertex(new Triple(this.upRight.position.x - this.width, this.dnRight.position.y, 0),
+        this.northWest = new Vertex(new Triple(this.upLeft.position.x, this.upLeft.position.y - this.depth, 0),
                 this.color);
 
-        // Vertices for south wall plus the wall_width constant
-        this.southEast = new Vertex(new Triple(this.dnRight.position.x, this.dnRight.position.y + this.width, 0),
+        // Vertices for east wall minus the wall_depth constant
+        this.eastSouth = new Vertex(new Triple(this.dnRight.position.x - this.depth, this.dnRight.position.y, 0),
                 this.color);
-        this.southWest = new Vertex(new Triple(this.dnLeft.position.x, this.dnLeft.position.y + this.width, 0),
+        this.eastNorth = new Vertex(new Triple(this.upRight.position.x - this.depth, this.upRight.position.y, 0),
                 this.color);
 
-        // Vertices for east wall plus the wall_width constant
-        this.westNorth = new Vertex(new Triple(this.upLeft.position.x + this.width, this.dnRight.position.y, 0),
+        // Vertices for south wall plus the wall_depth constant
+        this.southEast = new Vertex(new Triple(this.dnRight.position.x, this.dnRight.position.y + this.depth, 0),
                 this.color);
-        this.westSouth = new Vertex(new Triple(this.dnLeft.position.x + this.width, this.dnRight.position.y, 0),
+        this.southWest = new Vertex(new Triple(this.dnLeft.position.x, this.dnLeft.position.y + this.depth, 0),
+                this.color);
+
+        // Vertices for east wall plus the wall_depth constant
+        this.westNorth = new Vertex(new Triple(this.upLeft.position.x + this.depth, this.upLeft.position.y, 0),
+                this.color);
+        this.westSouth = new Vertex(new Triple(this.dnLeft.position.x + this.depth, this.dnLeft.position.y, 0),
                 this.color);
 
         // north wall
