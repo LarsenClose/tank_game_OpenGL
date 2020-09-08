@@ -261,8 +261,12 @@ public class Ex3 extends Basic {
                      }
                   else  
                      {
+                        // walk it back
+
+                        double back_x = (box.x - Math.cos(Math.toRadians(box.bearing)) * box.width*2);
+                        double back_y = (box.y - Math.sin(Math.toRadians(box.bearing)) * box.height*2);
                         box.speed = 0;
-                        box.updateLocation(box.x, box.y);
+                        box.updateLocation(back_x, back_y);
                         boxIn.speed = 0;
                      }
                } // end tank tank collision check
