@@ -1,6 +1,6 @@
 public class Constants {
 
-
+    static float bullet_limit = 50f;
     static float bullet_width = .01f;
     static float bullet_height = .01f;
     static float bullet_speed = .005f;
@@ -8,16 +8,16 @@ public class Constants {
 
     static int ammunition_box = 20;
 
-    static float speed_increment = .0001f;
+    static float speed_increment = .0002f;
     static float degree_change = 8;
 
     static float basic_width = .05f;
     static float basic_height = .1f;
 
 
-    static float ammo_dimensions = .04f;
+    static float ammo_dimensions = .02f;
 
-    static float mine_dimensions = .02f;
+    static float mine_dimensions = .01f;
 
 
     static double wall_depth = .02f;
@@ -45,4 +45,6 @@ public class Constants {
 
     static Triple mine_location_one = new Triple((double) -.8, (double) .8,(double) 0);
     static Triple mine_location_two = new Triple((double) .8, (double) -.8,(double) 0);
+    static Triple mine_location_three = new Triple((double) -.1, (double) .6,(double) 0);
+    static Triple mine_location_four = new Triple((double) .4, (double) -.3,(double) 0);
 }

@@ -22,7 +22,7 @@ public class Ammo extends Box{
 
         this.width = Constants.ammo_dimensions;
         this.height = Constants.ammo_dimensions;
-        this.color = Colors.green;
+        this.color = Colors.new_blue;
 
         buildTriangles(center, this.color);
 
@@ -70,5 +70,9 @@ public class Ammo extends Box{
                             this.color));
         }
 
+        public void updateColor(){
+            this.color = Colors.white;
+            buildTriangles(new Triple(this.x, this.y, this.z), this.color);
+        }
 
 }

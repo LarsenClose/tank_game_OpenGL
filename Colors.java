@@ -8,4 +8,7 @@ public class Colors {
     static Triple none = new Triple(0, 0, 0);
     static Triple green = new Triple(.4, 1, 0.2);
     static Triple pink = new Triple(.8, 0, 0.6);
+    static Triple new_blue = new Triple(.2, .6, 1);
+    static Triple white = new Triple(1, 1, 1);
+
 }

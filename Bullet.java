@@ -95,9 +95,10 @@ public class Bullet extends Box {
         }
 
 
-    public void updateColor(){
-        this.color = Colors.none;
-    }
+        public void updateColor(){
+            this.color = Colors.white;
+            buildTriangles(new Triple(this.x, this.y, this.z), this.color);
+        }
     
     
 
