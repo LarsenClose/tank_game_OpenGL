@@ -2,7 +2,7 @@ import java.nio.FloatBuffer;
 
 public class Vertex {
 
-   private Triple position;
+   public Triple position;
    private Triple color;
 
    public Vertex( Triple p, Triple c ) {
