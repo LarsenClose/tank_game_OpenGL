@@ -6,6 +6,7 @@
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
+
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -76,6 +77,20 @@ public class Ex3 extends Basic {
       boxes.add(box2);
       boxes.add(box3);
       boxes.add(box4);
+
+      Ammo ammo1 = new Ammo(Constants.ammo_location_one);
+      Ammo ammo2 = new Ammo(Constants.ammo_location_two);
+      Ammo ammo3 = new Ammo(Constants.ammo_location_three);
+
+      boxes.add(ammo1);
+      boxes.add(ammo2);
+      boxes.add(ammo3);
+
+      Mine mine1 = new Mine(Constants.mine_location_one);
+      Mine mine2 = new Mine(Constants.mine_location_two);
+
+      boxes.add(mine1);
+      boxes.add(mine2);
 
       Border border = new Border(Constants.NW, Constants.NE, Constants.SE, Constants.SW);
 
@@ -206,6 +221,10 @@ public class Ex3 extends Basic {
 
    protected void update() {
 
+      ArrayList<Box> toKill = new ArrayList<Box>();
+
+  
+      boxes.removeAll(toKill);
 
 
       for (int i = 0; i < boxes.size(); i++) {
@@ -232,7 +251,7 @@ public class Ex3 extends Basic {
                   (next_x_range_start <= left) ||
                   (next_x_range_stop >= right))
             {
-               box.speed = 0;
+               box.bearing += 180 % 360;
                box.updateLocation(box.x, box.y);
                
             }
@@ -265,9 +284,9 @@ public class Ex3 extends Basic {
 
                         double back_x = (box.x - Math.cos(Math.toRadians(box.bearing)) * box.width*2);
                         double back_y = (box.y - Math.sin(Math.toRadians(box.bearing)) * box.height*2);
-                        box.speed = 0;
+                        box.bearing += 180 % 360;
                         box.updateLocation(back_x, back_y);
-                        boxIn.speed = 0;
+                        boxIn.bearing += 180 % 360;
                      }
                } // end tank tank collision check
 
@@ -304,7 +323,31 @@ public class Ex3 extends Basic {
 
 
 
-               } // end tank outer, bullet inner check
+               } else if (boxes.get(iIn).getClass() == Box.class){
+                  Box boxIn = (Box) boxes.get(iIn);
+
+                  double x_start = boxIn.x - (.5 * (boxIn.width));
+                  double x_stop = boxIn.x + (.5 * (boxIn.width));
+
+                  double y_start = boxIn.y - (.5 * (boxIn.height));
+                  double y_stop = boxIn.y + (.5 * (boxIn.height));
+               if (
+                  next_x_range_stop < x_start ||
+                  next_x_range_start > x_stop ||
+                  next_y_range_stop < y_start ||
+                  next_y_range_start > y_stop)
+                  {
+                     box.updateLocation(next_x, next_y); // update if no collision
+                  }
+               else
+                  {
+                     box.bearing += 180 % 360;
+
+                  }
+               }
+               
+               
+               // end tank outer, bullet inner check
 
 
 
@@ -315,7 +358,7 @@ public class Ex3 extends Basic {
             
          }  // end outer loop initialized as tank
 
-         //    outer loop if bullet
+         //    outer loop is bullet
          if (boxes.get(i).getClass() == Bullet.class) {
 
             // initialize variables
@@ -337,8 +380,13 @@ public class Ex3 extends Basic {
                   (next_x_range_start <= left) ||
                   (next_x_range_stop >= right))
                   {  
-                     box.speed = 0;             
-                     box.updateLocation(box.x, box.y);
+                     if (box.speed == 0){
+                        toKill.add(box);
+                     }
+                     toKill.add(box);
+                     box.updateLocation(next_x, next_y);
+                     box.alive = false;
+                     box.updateColor();
                   }
             else{
                box.updateLocation(next_x, next_y);
@@ -401,6 +449,14 @@ public class Ex3 extends Basic {
       // (next_y_range_stop <= y_stop)) {}
       // }
 
+      //    for (Box box : boxes){
+      //       if (box.getClass() == Bullet.class) {
+      //          if (box.speed == 0) {
+      //          boxes.remove(box);
+      //       }
+      //    }
+      // }
+         
    }
 
    protected void display() {
@@ -412,7 +468,7 @@ public class Ex3 extends Basic {
 
       // draw the buffers
 
-      GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, (48 + boxes.size() * 30));
+      GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, (300 + boxes.size() * 300));
       Util.error("after draw arrays");
 
    }
@@ -481,6 +537,8 @@ public class Ex3 extends Basic {
       GL20.glVertexAttribPointer(1, 3, GL11.GL_FLOAT, false, 0, 0);
       Util.error("after do color vertex attrib pointer");
 
+
+
    }// sendData
 
    // given an array with data in it and an allocbox.x
@@ -491,8 +549,8 @@ public class Ex3 extends Basic {
          // System.out.println((tank.bearing));
          // System.out.println(tank.x +Math.sin(Math.toRadians(tank.bearing)*.5));
 
-         boxes.add(new Bullet(new Triple(tank.x + (Math.sin(Math.toRadians(tank.bearing)) * .4),
-               tank.y + (Math.cos(Math.toRadians(tank.bearing)) * .4), tank.z), tank.bearing));
+         boxes.add(new Bullet(new Triple(tank.x + (Math.cos(Math.toRadians(tank.bearing)) * .4),
+               tank.y + (Math.sin(Math.toRadians(tank.bearing)) * .4), tank.z), tank.bearing, tank.ammunition));
          tank.ammunition -= 1;
       }
    }

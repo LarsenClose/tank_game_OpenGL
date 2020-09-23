@@ -1,70 +1,46 @@
 import java.nio.FloatBuffer;
 
+public class Mine extends Box{
 
-
-public class Bullet extends Box {
-
-    public String kind;
-    public float speed;
-
-    // center
     public double x;
     public double y;
     public double z;
-
-    public boolean alive;
-
-    public Triple center;
+    
     public Float width;
     public Float height;
-    public Float bearing;
+
     public Triple color;
+    public Triple center;
 
     private Triangle a, b;
 
-    public Bullet(Triple center, Float bearing, float identifier) {
-
-        this.kind = "bullet";
-        this.bearing = bearing;
+    public Mine(Triple center) {
 
         this.x = center.x;
         this.y = center.y;
         this.z = center.z;
-        this.alive = true;
 
-
-        // defined in Constants class
-        this.width = Constants.bullet_width;
-        this.height = Constants.bullet_height;
-        this.speed = Constants.bullet_speed;
-
-        this.color = Colors.silver;
+        this.width = Constants.mine_dimensions;
+        this.height = Constants.mine_dimensions;
+        this.color = Colors.pink;
 
         buildTriangles(center, this.color);
-        
-        
 
     }
 
-                        
-        
+           
         // put all the data for this triangle to
         // pb and cb
         public void sendData( FloatBuffer pb, FloatBuffer cb ) {
-            if (alive ){
                 this.a.a.sendData( pb, cb );
                 this.a.b.sendData( pb, cb );
                 this.a.c.sendData( pb, cb );
                 this.b.a.sendData( pb, cb );
                 this.b.b.sendData( pb, cb );
                 this.b.c.sendData( pb, cb );
-            }
-                
         }
 
-        public void updateLocation(Double x, Double y) {
-            buildTriangles(new Triple(x, y, 0), this.color);
-        }
+
     
         public void buildTriangles(Triple location, Triple color){
             this.x = location.x;
@@ -95,12 +71,4 @@ public class Bullet extends Box {
         }
 
 
-    public void updateColor(){
-        this.color = Colors.none;
-    }
-    
-    
-
-
 }
-
