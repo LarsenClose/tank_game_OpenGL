@@ -3,7 +3,9 @@ public class Constants {
   static float bullet_width = .01f;
   static float bullet_height = .01f;
   static float bullet_speed = .005f;
-  static int starting_ammunition = 100;
+  static int starting_ammunition = 75;
+
+  static double collosion_box_multiplier = .72;
 
   static int ammunition_box = 20;
 

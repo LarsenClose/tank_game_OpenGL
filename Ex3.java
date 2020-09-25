@@ -17,7 +17,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
 public class Ex3 extends Basic {
-  private static final int MAX = 10;
+  private static int MAX = 10;
 
   public static void main(String[] args) {
     Ex3 app = new Ex3("adversarial Euclidean amoeboids", 500, 500, 30);
@@ -36,6 +36,7 @@ public class Ex3 extends Basic {
   private Tank blue_tank;
 
   public Box box;
+  public Box boxIn;
 
   public double top;
   public double right;
@@ -90,40 +91,23 @@ public class Ex3 extends Basic {
     boxes.add(mine3);
     boxes.add(mine4);
 
-    Border border = new Border(
-      Constants.NW,
-      Constants.NE,
-      Constants.SE,
-      Constants.SW
-    );
+    Border border = new Border(Constants.NW, Constants.NE, Constants.SE, Constants.SW);
 
     boxes.add(border);
   }
 
   protected void init() {
-    String vertexShaderCode =
-      "#version 330 core\n" +
-      "layout (location = 0 ) in vec3 vertexPosition;\n" +
-      "layout (location = 1 ) in vec3 vertexColor;\n" +
-      "out vec3 color;\n" +
-      "void main(void)\n" +
-      "{\n" +
-      "  color = vertexColor;\n" +
-      "  gl_Position = vec4( vertexPosition, 1.0);\n" +
-      "}\n";
+    String vertexShaderCode = "#version 330 core\n" + "layout (location = 0 ) in vec3 vertexPosition;\n"
+        + "layout (location = 1 ) in vec3 vertexColor;\n" + "out vec3 color;\n" + "void main(void)\n" + "{\n"
+        + "  color = vertexColor;\n" + "  gl_Position = vec4( vertexPosition, 1.0);\n" + "}\n";
 
     System.out.println("Vertex shader:\n" + vertexShaderCode + "\n\n");
 
     v1 = new Shader("vertex", vertexShaderCode);
 
-    String fragmentShaderCode =
-      "#version 330 core\n" +
-      "in vec3 color;\n" +
-      "layout (location = 0 ) out vec4 fragColor;\n" +
-      "void main(void)\n" +
-      "{\n" +
-      "  fragColor = vec4(color, 1.0 );\n" +
-      "}\n";
+    String fragmentShaderCode = "#version 330 core\n" + "in vec3 color;\n"
+        + "layout (location = 0 ) out vec4 fragColor;\n" + "void main(void)\n" + "{\n"
+        + "  fragColor = vec4(color, 1.0 );\n" + "}\n";
 
     System.out.println("Fragment shader:\n" + fragmentShaderCode + "\n\n");
 
@@ -148,12 +132,7 @@ public class Ex3 extends Basic {
     positionHandle = GL15.glGenBuffers();
     colorHandle = GL15.glGenBuffers();
 
-    System.out.println(
-      "have position handle " +
-      positionHandle +
-      " and color handle " +
-      colorHandle
-    );
+    System.out.println("have position handle " + positionHandle + " and color handle " + colorHandle);
 
     // create the buffers (data doesn't matter so much, just the size)
     positionBuffer = Util.createFloatBuffer(MAX * 15 * 15);
@@ -169,10 +148,7 @@ public class Ex3 extends Basic {
     while (InputInfo.size() > 0) {
       InputInfo info = InputInfo.get();
 
-      if (
-        info.kind == 'k' &&
-        (info.action == GLFW_PRESS || info.action == GLFW_REPEAT)
-      ) {
+      if (info.kind == 'k' && (info.action == GLFW_PRESS || info.action == GLFW_REPEAT)) {
         int code = info.code;
 
         if (code == GLFW_KEY_B) {
@@ -216,7 +192,6 @@ public class Ex3 extends Basic {
 
   protected void update() {
     ArrayList<Box> toKill = new ArrayList<Box>();
-
     boxes.removeAll(toKill);
 
     for (int i = 0; i < boxes.size(); i++) {
@@ -224,108 +199,88 @@ public class Ex3 extends Basic {
         // initialize outer loop if class tank
         Tank box = (Tank) boxes.get(i);
 
-        double next_x =
-          (box.x + Math.cos(Math.toRadians(box.bearing)) * box.speed);
-        double next_y =
-          (box.y + Math.sin(Math.toRadians(box.bearing)) * box.speed);
+        double next_x = (box.x + Math.cos(Math.toRadians(box.bearing)) * box.speed);
+        double next_y = (box.y + Math.sin(Math.toRadians(box.bearing)) * box.speed);
 
-        double next_x_range_start = next_x - (.5 * (box.width));
-        double next_x_range_stop = next_x + (.5 * (box.width));
+        double next_x_range_start = next_x - (Constants.collosion_box_multiplier * (box.width));
+        double next_x_range_stop = next_x + (Constants.collosion_box_multiplier * (box.width));
 
-        double next_y_range_start = next_y - (.5 * (box.height));
-        double next_y_range_stop = next_y + (.5 * (box.height));
+        double next_y_range_start = next_y - (Constants.collosion_box_multiplier * (box.height));
+        double next_y_range_stop = next_y + (Constants.collosion_box_multiplier * (box.height));
 
-        //    first check the boundary domain
-        if (
-          (next_y_range_stop >= top) ||
-          (next_y_range_start <= bottom) ||
-          (next_x_range_start <= left) ||
-          (next_x_range_stop >= right)
-        ) {
-          //    if colision don't update to next x y, inverse bearing and bounce
+        // first check the boundary domain
+        if ((next_y_range_stop >= top) || (next_y_range_start <= bottom) || (next_x_range_start <= left)
+            || (next_x_range_stop >= right)) {
+          // if colision don't update to next x y, inverse bearing and bounce
           box.bearing += 180 % 360;
           box.updateLocation(box.x, box.y);
         }
         // start inner loop
         for (int iIn = 0; iIn < boxes.size(); iIn++) {
-          if (
-            boxes.get(iIn).getClass() == Tank.class &&
-            boxes.get(i) != boxes.get(iIn)
-          ) {
-            // initialize inner if tank and not self
+          if (boxes.get(iIn).getClass() == Tank.class && box != boxes.get(iIn)) {
             Tank boxIn = (Tank) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double next_xIn = (boxIn.x + Math.cos(Math.toRadians(boxIn.bearing)) * boxIn.speed);
+            double next_yIn = (boxIn.y + Math.sin(Math.toRadians(boxIn.bearing)) * boxIn.speed);
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
+            double next_x_range_startIn = next_xIn - (Constants.collosion_box_multiplier * (boxIn.width));
+            double next_x_range_stopIn = next_xIn + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            // if no collision between tanks update else stop
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
-              box.updateLocation(next_x, next_y);
+            double next_y_range_startIn = next_yIn - (Constants.collosion_box_multiplier * (boxIn.height));
+            double next_y_range_stopIn = next_yIn + (Constants.collosion_box_multiplier * (boxIn.height));
+
+            // checking borders
+            if ((next_y_range_stopIn >= top) || (next_y_range_startIn <= bottom) || (next_x_range_startIn <= left)
+                || (next_x_range_stopIn >= right)) {
+
+              boxIn.bearing += 180 % 360;
+              boxIn.updateLocation(boxIn.x, boxIn.y);
+            }
+
+            // if no collision between tanks update else bounce
+            if (next_x_range_stop < next_x_range_startIn || next_x_range_start > next_x_range_stopIn
+                || next_y_range_stop < next_y_range_startIn || next_y_range_start > next_y_range_stopIn) {
+              boxIn.updateLocation(next_xIn, next_yIn);
+
             } else {
               // walk it back
-
-              double back_x =
-                (box.x - Math.cos(Math.toRadians(box.bearing)) * box.width * 2);
-              double back_y =
-                (
-                  box.y - Math.sin(Math.toRadians(box.bearing)) * box.height * 2
-                );
               box.bearing += 180 % 360;
-              box.updateLocation(back_x, back_y);
               boxIn.bearing += 180 % 360;
+
             }
           } // end tank tank collision check
-          //start tank outer bullet inner check
+
+          // start tank outer bullet inner check
           else if (boxes.get(iIn).getClass() == Bullet.class) {
             Bullet boxIn = (Bullet) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double x_start = boxIn.x - (Constants.collosion_box_multiplier * (boxIn.width));
+            double x_stop = boxIn.x + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
+            double y_start = boxIn.y - (Constants.collosion_box_multiplier * (boxIn.height));
+            double y_stop = boxIn.y + (Constants.collosion_box_multiplier * (boxIn.height));
+            if (next_x_range_stop < x_start || next_x_range_start > x_stop || next_y_range_stop < y_start
+                || next_y_range_start > y_stop) {
               box.updateLocation(next_x, next_y); // update if no collision
             } else {
               if (box.is_red) {
-                System.out.println(
-                  "Congratulations! Blue tank has won the game, the red tank has been destroyed."
-                );
+                System.out.println("Congratulations! Blue tank has won the game, the red tank has been destroyed.");
                 System.exit(0);
               } else {
-                System.out.println(
-                  "Congratulations! Red tank has won the game, the blue tank has been destroyed."
-                );
+                System.out.println("Congratulations! Red tank has won the game, the blue tank has been destroyed.");
                 System.exit(0);
               }
             }
           } else if (boxes.get(iIn).getClass() == Box.class) {
             Box boxIn = (Box) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double x_start = boxIn.x - (Constants.collosion_box_multiplier * (boxIn.width));
+            double x_stop = boxIn.x + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
+            double y_start = boxIn.y - (Constants.collosion_box_multiplier * (boxIn.height));
+            double y_stop = boxIn.y + (Constants.collosion_box_multiplier * (boxIn.height));
+            if (next_x_range_stop < x_start || next_x_range_start > x_stop || next_y_range_stop < y_start
+                || next_y_range_start > y_stop) {
               box.updateLocation(next_x, next_y); // update if no collision
             } else {
               box.bearing += 180 % 360;
@@ -333,45 +288,33 @@ public class Ex3 extends Basic {
           } else if (boxes.get(iIn).getClass() == Mine.class) {
             Mine boxIn = (Mine) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double x_start = boxIn.x - (Constants.collosion_box_multiplier * (boxIn.width));
+            double x_stop = boxIn.x + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
+            double y_start = boxIn.y - (Constants.collosion_box_multiplier * (boxIn.height));
+            double y_stop = boxIn.y + (Constants.collosion_box_multiplier * (boxIn.height));
+            if (next_x_range_stop < x_start || next_x_range_start > x_stop || next_y_range_stop < y_start
+                || next_y_range_start > y_stop) {
               box.updateLocation(next_x, next_y); // update if no collision
             } else {
               if (box.is_red) {
-                System.out.println(
-                  "Congratulations! Blue tank has won the game, the red tank has been destroyed."
-                );
+                System.out.println("Congratulations! Blue tank has won the game, the red tank has been destroyed.");
                 System.exit(0);
               } else {
-                System.out.println(
-                  "Congratulations! Red tank has won the game, the blue tank has been destroyed."
-                );
+                System.out.println("Congratulations! Red tank has won the game, the blue tank has been destroyed.");
                 System.exit(0);
               }
             }
           } else if (boxes.get(iIn).getClass() == Ammo.class) {
             Ammo boxIn = (Ammo) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double x_start = boxIn.x - (Constants.collosion_box_multiplier * (boxIn.width));
+            double x_stop = boxIn.x + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
+            double y_start = boxIn.y - (Constants.collosion_box_multiplier * (boxIn.height));
+            double y_stop = boxIn.y + (Constants.collosion_box_multiplier * (boxIn.height));
+            if (next_x_range_stop < x_start || next_x_range_start > x_stop || next_y_range_stop < y_start
+                || next_y_range_start > y_stop) {
               box.updateLocation(next_x, next_y); // update if no collision
             } else {
               box.ammunition += Constants.ammunition_box;
@@ -382,29 +325,23 @@ public class Ex3 extends Basic {
         } // end inner loop
       } // end outer loop initialized as tank
 
-      //    outer loop is bullet
+      // outer loop is bullet
       if (boxes.get(i).getClass() == Bullet.class) {
         // initialize variables
         Bullet box = (Bullet) boxes.get(i);
 
-        double next_x =
-          (box.x + Math.cos(Math.toRadians(box.bearing)) * box.speed);
-        double next_y =
-          (box.y + Math.sin(Math.toRadians(box.bearing)) * box.speed);
+        double next_x = (box.x + Math.cos(Math.toRadians(box.bearing)) * box.speed);
+        double next_y = (box.y + Math.sin(Math.toRadians(box.bearing)) * box.speed);
 
-        double next_x_range_start = next_x - (.5 * (box.width));
-        double next_x_range_stop = next_x + (.5 * (box.width));
+        double next_x_range_start = next_x - (Constants.collosion_box_multiplier * (box.width));
+        double next_x_range_stop = next_x + (Constants.collosion_box_multiplier * (box.width));
 
-        double next_y_range_start = next_y - (.5 * (box.height));
-        double next_y_range_stop = next_y + (.5 * (box.height));
+        double next_y_range_start = next_y - (Constants.collosion_box_multiplier * (box.height));
+        double next_y_range_stop = next_y + (Constants.collosion_box_multiplier * (box.height));
 
         // first check boundary
-        if (
-          (next_y_range_stop >= top) ||
-          (next_y_range_start <= bottom) ||
-          (next_x_range_start <= left) ||
-          (next_x_range_stop >= right)
-        ) {
+        if ((next_y_range_stop >= top) || (next_y_range_start <= bottom) || (next_x_range_start <= left)
+            || (next_x_range_stop >= right)) {
           if (box.speed == 0) {
             toKill.add(box);
           }
@@ -416,22 +353,18 @@ public class Ex3 extends Basic {
           box.updateLocation(next_x, next_y);
         }
 
-        //new inner loop with bullet outer
+        // new inner loop with bullet outer
         for (int iIn = 0; iIn < boxes.size(); iIn++) {
           if (boxes.get(iIn).getClass() == Box.class) {
             Box boxIn = (Box) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double x_start = boxIn.x - (Constants.collosion_box_multiplier * (boxIn.width));
+            double x_stop = boxIn.x + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
+            double y_start = boxIn.y - (Constants.collosion_box_multiplier * (boxIn.height));
+            double y_stop = boxIn.y + (Constants.collosion_box_multiplier * (boxIn.height));
+            if (next_x_range_stop < x_start || next_x_range_start > x_stop || next_y_range_stop < y_start
+                || next_y_range_start > y_stop) {
               box.updateLocation(next_x, next_y); // update if no collision
             } else {
               if (box.speed == 0) {
@@ -442,22 +375,16 @@ public class Ex3 extends Basic {
               box.alive = false;
               box.updateColor();
             }
-          } else if (
-            boxes.get(iIn).getClass() == Bullet.class && boxes.get(iIn) != box
-          ) {
+          } else if (boxes.get(iIn).getClass() == Bullet.class && boxes.get(iIn) != box) {
             Bullet boxIn = (Bullet) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double x_start = boxIn.x - (Constants.collosion_box_multiplier * (boxIn.width));
+            double x_stop = boxIn.x + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
+            double y_start = boxIn.y - (Constants.collosion_box_multiplier * (boxIn.height));
+            double y_stop = boxIn.y + (Constants.collosion_box_multiplier * (boxIn.height));
+            if (next_x_range_stop < x_start || next_x_range_start > x_stop || next_y_range_stop < y_start
+                || next_y_range_start > y_stop) {
               box.updateLocation(next_x, next_y); // update if no collision
             } else {
               if (box.speed == 0) {
@@ -479,17 +406,13 @@ public class Ex3 extends Basic {
           } else if (boxes.get(iIn).getClass() == Ammo.class) {
             Ammo boxIn = (Ammo) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double x_start = boxIn.x - (Constants.collosion_box_multiplier * (boxIn.width));
+            double x_stop = boxIn.x + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
+            double y_start = boxIn.y - (Constants.collosion_box_multiplier * (boxIn.height));
+            double y_stop = boxIn.y + (Constants.collosion_box_multiplier * (boxIn.height));
+            if (next_x_range_stop < x_start || next_x_range_start > x_stop || next_y_range_stop < y_start
+                || next_y_range_start > y_stop) {
               box.updateLocation(next_x, next_y); // update if no collision
             } else {
               if (box.speed == 0) {
@@ -503,17 +426,13 @@ public class Ex3 extends Basic {
           } else if (boxes.get(iIn).getClass() == Mine.class) {
             Mine boxIn = (Mine) boxes.get(iIn);
 
-            double x_start = boxIn.x - (.5 * (boxIn.width));
-            double x_stop = boxIn.x + (.5 * (boxIn.width));
+            double x_start = boxIn.x - (Constants.collosion_box_multiplier * (boxIn.width));
+            double x_stop = boxIn.x + (Constants.collosion_box_multiplier * (boxIn.width));
 
-            double y_start = boxIn.y - (.5 * (boxIn.height));
-            double y_stop = boxIn.y + (.5 * (boxIn.height));
-            if (
-              next_x_range_stop < x_start ||
-              next_x_range_start > x_stop ||
-              next_y_range_stop < y_start ||
-              next_y_range_start > y_stop
-            ) {
+            double y_start = boxIn.y - (Constants.collosion_box_multiplier * (boxIn.height));
+            double y_stop = boxIn.y + (Constants.collosion_box_multiplier * (boxIn.height));
+            if (next_x_range_stop < x_start || next_x_range_start > x_stop || next_y_range_stop < y_start
+                || next_y_range_start > y_stop) {
               box.updateLocation(next_x, next_y); // update if no collision
             } else {
               if (box.speed == 0) {
@@ -575,11 +494,7 @@ public class Ex3 extends Basic {
     // now connect the buffers
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, positionHandle);
     Util.error("after bind positionHandle");
-    GL15.glBufferData(
-      GL15.GL_ARRAY_BUFFER,
-      positionBuffer,
-      GL15.GL_STATIC_DRAW
-    );
+    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, positionBuffer, GL15.GL_STATIC_DRAW);
     Util.error("after set position data");
 
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, colorHandle);
@@ -612,17 +527,8 @@ public class Ex3 extends Basic {
     if (tank.ammunition > 0) {
       float limit = Constants.bullet_limit;
 
-      boxes.add(
-        new Bullet(
-          new Triple(
-            tank.x + (Math.cos(Math.toRadians(tank.bearing)) * .4),
-            tank.y + (Math.sin(Math.toRadians(tank.bearing)) * .4),
-            tank.z
-          ),
-          tank.bearing,
-          limit - 1
-        )
-      );
+      boxes.add(new Bullet(new Triple(tank.x + (Math.cos(Math.toRadians(tank.bearing)) * .4),
+          tank.y + (Math.sin(Math.toRadians(tank.bearing)) * .4), tank.z), tank.bearing, limit - 1));
       tank.ammunition -= 1;
     }
   }
